@@ -10,7 +10,6 @@ import numpy as np
 import cv2
 from io import BytesIO
 import threading
-from naoqi import ALProxy
 
 class LyingNao(Robot):
     def __init__(self):
@@ -19,5 +18,3 @@ class LyingNao(Robot):
         
         
 robot = LyingNao()
-tts = ALProxy("ALTextToSpeech", "nao.local", 9559)
-tts.say("It works!")
