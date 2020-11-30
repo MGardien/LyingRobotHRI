@@ -1,6 +1,6 @@
 """Rock, Paper, Scissors, the lying Nao"""
 
-# Bram Pol
+# Bram Pol - s4815521
 # Max Gardien 
 # Britt van Gemert - s4555740
 # Veronne Reinders - s4603478
