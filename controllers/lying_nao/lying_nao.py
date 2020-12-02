@@ -12,6 +12,7 @@ from io import BytesIO
 import threading
 import random
 from time import sleep as sleep
+import pyttsx3
 
 class LyingNao(Robot):
     def __init__(self):
@@ -40,18 +41,13 @@ class LyingNao(Robot):
         self.actionList = ['Rock', 'Paper', 'Scissors']
         self.lieList = ['True', 'Lie', 'Nothing']
         self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
-
-        count = 0
-        while count<15:
-            print('Iteration:', count,'\n')
-            self.playPipeline()
-            count+=1
-
-        print('finished')
-
+        
+        self.engine = pyttsx3.init()
 
     def playPipeline(self):
         truthOfHint = self.truthLieOrNothing()
+        if truthOfHint == "Lie" or truthOfHint == "True":
+            self.audioNao(truthOfHint)
         print('truthOfHint, ', truthOfHint)
         hint = self.giveHint(truthOfHint)
         print('hint, ', hint)
@@ -131,6 +127,22 @@ class LyingNao(Robot):
 
     def truthLieOrNothing(self):
         return random.choice(self.lieList)
+        
+    def audioNao(self, value):
+        if value == "Lie":
+            self.engine.say("I am going to Lie!")
+        if value == "True":
+            self.engine.say("Trust me I will tell the truth")
+        self.engine.runAndWait()
+        self.engine.stop()
 
 
 robot = LyingNao()
+count = 0
+while count<15:
+    print('Iteration:', count,'\n')
+    robot.playPipeline()
+    count+=1
+
+print('finished')
+
