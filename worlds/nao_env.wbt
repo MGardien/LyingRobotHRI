@@ -22,8 +22,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.0008331963313593192 -0.990561415380446 -0.1370670935832562 3.1536352546437785
-  position -0.22766537663860537 1.1406722076921811 -3.5502922715153247
+  orientation -0.005135550984814095 -0.995653870066897 -0.09298923129531128 3.0317285972633963
+  position -0.6892688777434709 0.4440804496577263 -2.4946295744577673
   follow "NAO"
 }
 TexturedBackground {
@@ -35,86 +35,214 @@ Floor {
   tileSize 0.8 0.8
 }
 Nao {
-  hidden position_0_0 1.3520209452000388e-08
-  hidden position2_0_0 -4.224115061564438e-08
-  hidden position_0_1 1.7450007941379573
-  hidden position2_0_1 -0.3489990871994475
-  hidden position_0_2 1.745000794542977
-  hidden position2_0_2 0.3489990920588832
-  hidden position_0_3 2.1195588177280894e-05
-  hidden position_0_4 -2.4557542896751082e-05
-  hidden rotation_12 6.4383524090489664e-09 -0.9524042407636484 0.3048379277180231 4.2146848510894035e-08
-  hidden rotation_19 -0.17180062388339032 0.9745199824814135 -0.14420592698534732 1.7703609088653758
-  hidden position_19_0 1.3959993355085911
-  hidden rotation_20 1 0 0 1.3959993355085913
-  hidden position_20_0 1.3959989247565414
-  hidden rotation_21 0 0 0.9999999999999999 1.3959989247565414
-  hidden position_21_0 -4.4569963764900457e-08
-  hidden rotation_22 -1 0 0 4.2146848510894035e-08
-  hidden position_22_0 7.840969243995102e-10
-  hidden position_22_1 7.841209428837417e-10
-  hidden position_22_2 2.2619494098052894e-10
-  hidden rotation_23 0 0.9999999999999999 0 0.9599999992159031
-  hidden position_23_0 3.36478676387531e-10
-  hidden rotation_24 0 1 0 0.9599999977941712
-  hidden position_24_0 1.9313229915084517e-10
-  hidden rotation_25 0 1 0 0.9599999986402297
-  hidden rotation_26 0 0.9999999999999999 0 0.9599999992158762
-  hidden position_26_0 4.699052588487346e-10
-  hidden rotation_27 0 1 0 0.9599999965933149
-  hidden position_27_0 1.9318194747614077e-10
-  hidden rotation_28 0 1 0 0.9599999986399781
-  hidden position_29_0 8.500227257601951e-11
-  hidden rotation_30 0 -0.9999999999999999 0 0.9599999996119908
-  hidden rotation_31 0.17180062620342879 0.9745199817930156 0.14420592887343628 1.770360909960835
-  hidden position_31_0 -1.3959993288541865
-  hidden rotation_32 -1 0 0 1.3959993288541863
-  hidden position_32_0 -1.3959989238641584
-  hidden rotation_33 0 0 -1 1.3959989238641584
-  hidden position_33_0 1.4006194876964682e-07
-  hidden rotation_34 1 0 0 1.3978528260658475e-07
-  hidden position_34_0 2.4069215796474074e-10
-  hidden position_34_1 2.406859213421431e-10
-  hidden position_34_2 3.5016952456523025e-10
-  hidden rotation_35 0 0.9999999999999999 0 0.9599999970131521
-  hidden position_35_0 4.700420840478351e-10
-  hidden rotation_36 0 1 0 0.9599999971399092
-  hidden position_36_0 8.835757329941346e-11
-  hidden rotation_37 0 1 0 0.9599999995457417
-  hidden rotation_38 0 1 0 0.9599999970132049
-  hidden position_38_0 4.702411930640858e-10
-  hidden rotation_39 0 1 0 0.959999997138147
-  hidden position_39_0 8.836418304661232e-11
-  hidden rotation_40 0 1 0 0.9599999995456936
-  hidden position_41_0 1.5177913051937783e-10
-  hidden rotation_42 0 -0.9999999999999999 0 0.9599999990093206
-  hidden rotation_43 0 0.7071067811865476 0.7071067811865476 2.1195591031778375e-05
-  hidden position_43_0 -0.031448890269718685
-  hidden rotation_44 -1 0 0 0.0314488902697167
-  hidden position_44_0 -0.5010043373270825
-  hidden rotation_45 0 -0.9999999999999999 0 0.5010043373270827
-  hidden position_45_0 1.0400170701090126
-  hidden rotation_46 0 1 0 1.0400170701090128
-  hidden position_46_0 -0.5390013305685859
-  hidden rotation_47 0 -1 0 0.539001330568586
-  hidden position_47_0 0.030997192732626952
-  hidden rotation_48 1 0 0 0.030997192732620034
-  hidden translation_49 0.019953343771800025 -0.007146207474423322 -0.04072824261892495
-  hidden rotation_49 -3.7386896360232354e-07 -5.911929393393941e-08 0.9999999999999284 -3.141578899057997
-  hidden rotation_53 0 -0.7071067811865475 0.7071067811865475 2.4557547658183667e-05
-  hidden position_53_0 -0.030983956899158123
-  hidden rotation_54 -1 0 0 0.030983956899155105
-  hidden position_54_0 -0.5040671509823943
-  hidden rotation_55 0 -1 0 0.5040671509823941
-  hidden position_55_0 1.0399906300299155
-  hidden rotation_56 0 0.9999999999999999 0 1.0399906300299155
-  hidden position_56_0 -0.5389991726776778
-  hidden rotation_57 0 -1 0 0.538999172677678
-  hidden position_57_0 0.031004554720987666
-  hidden rotation_58 1 0 0 0.03100455472098494
-  hidden translation_59 0.02004713090018273 0.007146322843532893 -0.04068718175308987
-  hidden rotation_59 2.2141662527977376e-06 -5.1308021387272816e-08 0.9999999999975475 -3.141587263027591
-  translation -0.2614478166267813 0.3058630865400511 -0.7105336284136031
-  rotation 0.5481845224611337 -0.5913816820368648 -0.5914063201262797 -2.140375201456316
+  hidden position_0_0 1.3507540377877273e-08
+  hidden position2_0_0 -5.4991395905044205e-08
+  hidden position_0_1 1.7450010352172112
+  hidden position2_0_1 -0.3489988102467926
+  hidden position_0_2 1.7450010356220846
+  hidden position2_0_2 0.3489988164976729
+  hidden position_0_3 2.0504481122141254e-05
+  hidden position_0_4 -2.413627152156187e-05
+  hidden rotation_12 6.558807857101445e-09 -0.9711328152449572 0.23853942054596297 5.16191365590357e-08
+  hidden rotation_19 -0.17180049261625382 0.9745200271507459 -0.14420578150310864 1.7703611038637372
+  hidden position_19_0 1.39599933488675
+  hidden rotation_20 1 0 0 1.3959993348867499
+  hidden position_20_0 1.3959985997594215
+  hidden rotation_21 0 0 1 1.3959985997594213
+  hidden position_21_0 7.719240008492591e-08
+  hidden rotation_22 1 0 0 7.884953353001448e-08
+  hidden position_22_0 1.0620358060634294e-09
+  hidden position_22_1 1.0620656550207862e-09
+  hidden position_22_2 3.6366545500592894e-10
+  hidden rotation_23 0 1 0 0.9599999989379646
+  hidden position_23_0 3.3628784974521216e-10
+  hidden rotation_24 0 1 0 0.9599999992598197
+  hidden position_24_0 2.2726028567069394e-10
+  hidden rotation_25 0 1 0 0.9599999995626521
+  hidden rotation_26 0 1 0 0.9599999989379314
+  hidden position_26_0 4.697124418977138e-10
+  hidden rotation_27 0 1 0 0.9599999989929705
+  hidden position_27_0 2.2731157533854933e-10
+  hidden rotation_28 0 1 0 0.9599999995625501
+  hidden position_29_0 8.499606872445871e-11
+  hidden rotation_30 0 -1 0 0.9599999998131084
+  hidden rotation_31 0.17180049560018806 0.9745200262628441 0.14420578394847902 1.7703611051597077
+  hidden position_31_0 -1.3959993284949817
+  hidden rotation_32 -1 0 0 1.3959993284949817
+  hidden position_32_0 -1.3959985986081183
+  hidden rotation_33 0 0 -1 1.3959985986081183
+  hidden position_33_0 1.8288516338379608e-08
+  hidden position_34_0 5.188040444421768e-10
+  hidden position_34_1 5.188021724503845e-10
+  hidden position_34_2 3.5230414636221827e-10
+  hidden rotation_35 0 1 0 0.9599999990995297
+  hidden position_35_0 3.3487214171884473e-10
+  hidden rotation_36 0 1 0 0.9599999992625465
+  hidden position_36_0 1.2231409838451172e-10
+  hidden rotation_37 0 1 0 0.9599999997724149
+  hidden rotation_38 0 1 0 0.9599999990995312
+  hidden position_38_0 3.3506906737552627e-10
+  hidden rotation_39 0 1 0 0.9599999992621566
+  hidden position_39_0 1.2231778642098902e-10
+  hidden rotation_40 0 1 0 0.9599999997724071
+  hidden position_41_0 1.5173876968485436e-10
+  hidden rotation_42 0 -1 0 0.9599999996795789
+  hidden rotation_43 0 0.7071067811865475 0.7071067811865475 2.050447428790731e-05
+  hidden position_43_0 -0.03144889872187928
+  hidden rotation_44 -1 0 0 0.031448898721881044
+  hidden position_44_0 -0.5010051125758845
+  hidden rotation_45 0 -1 0 0.5010051125758848
+  hidden position_45_0 1.040017970917215
+  hidden rotation_46 0 1 0 1.040017970917215
+  hidden position_46_0 -0.5390027006716063
+  hidden rotation_47 0 -1 0 0.5390027006716059
+  hidden position_47_0 0.030997188808301067
+  hidden rotation_48 0.9999999999999999 0 0 0.03099718880830697
+  hidden translation_49 0.01995324894666728 -0.007146255176880445 -0.040678547011404324
+  hidden rotation_49 -5.887018782874598e-07 -1.7001397520768606e-07 0.9999999999998124 -3.141578897325517
+  hidden rotation_53 0 -0.7071067811865476 0.7071067811865476 2.4136275151772305e-05
+  hidden position_53_0 -0.030983501550645852
+  hidden rotation_54 -1 0 0 0.030983501550650057
+  hidden position_54_0 -0.5040666627492439
+  hidden rotation_55 0 -1 0 0.5040666627492439
+  hidden position_55_0 1.0399928906168394
+  hidden rotation_56 0 1 0 1.0399928906168396
+  hidden position_56_0 -0.5389996812128014
+  hidden rotation_57 0 -1 0 0.538999681212801
+  hidden position_57_0 0.031005059383351682
+  hidden rotation_58 1 0 0 0.03100505938335438
+  hidden translation_59 0.020047284870101212 0.007146253267430791 -0.04063584989785631
+  hidden rotation_59 2.67006682564824e-06 -1.245664142117776e-07 0.9999999999964277 -3.14158725940531
+  translation -0.384171 0.305655 -0.741213
+  rotation 0.5481869045285993 -0.5913778970065215 -0.5914078970012968 -2.1403753071795864
   controller "lying_nao"
+}
+Solid {
+  translation -0.27 0.05 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+}
+Solid {
+  translation -0.37 0.15 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(1)"
+}
+Solid {
+  translation -0.37 0.05 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(3)"
+}
+Solid {
+  translation -0.17 0.05 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(2)"
+}
+Solid {
+  translation -0.47 0.15 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(4)"
+}
+Solid {
+  translation -0.47 0.05 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(5)"
+}
+Solid {
+  translation -0.57 0.05 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(8)"
+}
+Solid {
+  translation -0.57 0.15 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(9)"
+}
+Solid {
+  translation -0.27 0.15 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(6)"
+}
+Solid {
+  translation -0.17 0.15 -1.04
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(7)"
 }
