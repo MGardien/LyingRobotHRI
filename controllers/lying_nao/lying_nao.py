@@ -64,13 +64,17 @@ class LyingNao(Robot):
 
         self.straightenArm()
         self.moveArmRight()
-        # sleep(1)
-        # self.moveArmLeft()
+
+
+    def basePosition(self):
+        print('base position')
+        self.shoulderroll.setPosition(0)
+        self.shoulderpitch.setPosition(0.5*self.pitchmax)
 
     def moveArmRight(self):
-        print('base position')
+        print('move arm right')
         self.shoulderroll.setPosition(0.5*self.rollmin)
-        self.shoulderpitch.setPosition(0.3*self.pitchmax)
+        self.shoulderpitch.setPosition(0.7*self.pitchmax)
         # self
 
     def moveArmLeft(self):
