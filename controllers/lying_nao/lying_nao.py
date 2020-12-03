@@ -44,7 +44,8 @@ class LyingNao(Robot):
         self.shoulderpitch.getPositionSensor().enable(1)
         self.shoulderroll = self.getMotor('RShoulderRoll')
         self.shoulderroll.getPositionSensor().enable(1)
-
+        self.headyaw = self.getMotor('HeadYaw')
+        self.headpitch = self.getMotor('HeadPitch')
 
 
         self.actionList = ['Rock', 'Paper', 'Scissors']
@@ -62,9 +63,17 @@ class LyingNao(Robot):
         self.shoulderroll.setVelocity(1)
         self.shoulderpitch.setVelocity(1)
 
-        self.straightenArm()
-        self.moveArmRight()
+        self.basePosition()
+        self.turn_head()
 
+        self.straightenArm()
+        # self.moveArmRight()
+        # self.moveArmLeft()
+
+
+    def turn_head(self):
+        self.headyaw.setVelocity(1)
+        self.headyaw.setPosition(-0.6)
 
     def basePosition(self):
         print('base position')
