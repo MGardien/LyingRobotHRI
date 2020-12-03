@@ -37,18 +37,53 @@ class LyingNao(Robot):
 
         self.currentlyPlaying = True
 
+        # Initialize arm joints
+        self.elbowyaw = self.getMotor('RElbowYaw')
+        self.elbowroll= self.getMotor('RElbowRoll')
+        self.shoulderpitch = self.getMotor('RShoulderPitch')
+        self.shoulderpitch.getPositionSensor().enable(1)
+        self.shoulderroll = self.getMotor('RShoulderRoll')
+        self.shoulderroll.getPositionSensor().enable(1)
+
+
+
         self.actionList = ['Rock', 'Paper', 'Scissors']
         self.lieList = ['True', 'Lie', 'Nothing']
         self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
 
-        count = 0
-        while count<15:
-            print('Iteration:', count,'\n')
-            self.playPipeline()
-            count+=1
+        # count = 0
+        # while count<15:
+        #     print('Iteration:', count,'\n')
+        #     self.playPipeline()
+        #     count+=1
 
-        print('finished')
+        self.rollmin, self.rollmax = -1.3260, 0.3140
+        self.pitchmin, self.pitchmax = -2.0850, 2.0850
+        self.shoulderroll.setVelocity(1)
+        self.shoulderpitch.setVelocity(1)
 
+        self.straightenArm()
+        self.moveArmRight()
+        # sleep(1)
+        # self.moveArmLeft()
+
+    def moveArmRight(self):
+        print('base position')
+        self.shoulderroll.setPosition(0.5*self.rollmin)
+        self.shoulderpitch.setPosition(0.3*self.pitchmax)
+        # self
+
+    def moveArmLeft(self):
+        print('move arm left')
+        self.shoulderroll.setPosition(self.rollmax)
+        self.shoulderpitch.setPosition(0.3*self.pitchmax)
+
+
+    def straightenArm(self):
+        print("Straighten Arm")
+        rolmin = 0.0345
+        self.elbowroll.setPosition(rolmin)
+        self.elbowroll.setVelocity(1)
 
     def playPipeline(self):
         truthOfHint = self.truthLieOrNothing()
@@ -78,15 +113,6 @@ class LyingNao(Robot):
             print('Player won!')
         if playerChoice == 'Scissors' and naoChoice == 'Paper':
             print('Player won!')
-
-    def play(self, move):
-        while self.step(self.timeStep) != -1 and self.currentlyPlaying:
-            if move == 'Rock':
-                self.playRock()
-            if move == 'Paper':
-                self.playPaper()
-            if move == 'Scissors':
-                self.playScissors()
 
 
     def playerChooses(self, hint):
