@@ -13,13 +13,12 @@ import threading
 import random
 from time import sleep as sleep
 import pyttsx3
+import sys
 
 class LyingNao(Robot):
     def __init__(self):
         super(LyingNao, self).__init__()
-
-        print('> Starting robot controller')
-
+        
         # From the tutorial2_controller file
         # timeStep and state init
         self.timeStep = 32 # Milisecs to process the data (loop frequency) - Use int(self.getBasicTimeStep()) for default
@@ -43,57 +42,99 @@ class LyingNao(Robot):
         self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
         
         self.engine = pyttsx3.init()
+        
+        # Keyboard
+        self.keyboard.enable(self.timeStep)
+        self.keyboard = self.getKeyboard()
+        
+        print('Hi! Do you want to play a game with me? (Y/N)')
+        
+        self.playerAnswer()
 
     def playPipeline(self):
         truthOfHint = self.truthLieOrNothing()
-        if truthOfHint == "Lie" or truthOfHint == "True":
-            self.audioNao(truthOfHint)
-        print('truthOfHint, ', truthOfHint)
+        #if truthOfHint == "Lie" or truthOfHint == "True":
+            #self.audioNao(truthOfHint)
+        print('truthOfHint (hidden) ', truthOfHint)
         hint = self.giveHint(truthOfHint)
-        print('hint, ', hint)
+        print('I made my choice, my hint is: ', hint, '\n > Please make your choice:')
+        playerChoice = self.playerInput()
+        print('Your choice was: ', playerChoice)
         naoChoice = self.chooseOption(truthOfHint, hint)
         print('Nao\'s Choice: ', naoChoice, '\n')
-
-        playerChoice = self.playerChooses(hint)
+#       playerChoice = self.playerChooses(hint)
         self.whoWon(naoChoice, playerChoice)
+        self.currentlyPlaying = True
 
         print('\n------------------------------\n\n')
 
     def whoWon(self, naoChoice, playerChoice):
         if naoChoice == 'Paper' and playerChoice == 'Rock':
-            print('Nao won!')
+            print('I won!')
         if naoChoice == 'Rock' and playerChoice == 'Scissors':
-            print('Nao won!')
+            print('I won!')
         if naoChoice == 'Scissors' and playerChoice == 'Paper':
-            print('Nao won!')
+            print('I won!')
         if naoChoice == playerChoice:
             print('It\'s a tie!')
         if playerChoice == 'Paper' and naoChoice == 'Rock':
-            print('Player won!')
+            print('You won!')
         if playerChoice == 'Rock' and naoChoice == 'Scissors':
-            print('Player won!')
+            print('You won!')
         if playerChoice == 'Scissors' and naoChoice == 'Paper':
-            print('Player won!')
+            print('You won!')
 
-    def play(self, move):
+    def playerAnswer(self):
         while self.step(self.timeStep) != -1 and self.currentlyPlaying:
-            if move == 'Rock':
-                self.playRock()
-            if move == 'Paper':
-                self.playPaper()
-            if move == 'Scissors':
-                self.playScissors()
-
-
-    def playerChooses(self, hint):
-        # Player chooses best move and always trusts the hint
-        playerChoice = self.bestMove(hint)
-        print('Player choice: ', playerChoice)
+            key = self.keyboard.getKey()
+            if(key == 89 or key == 65625):
+                print('Great, let\'s start!')
+                break;
+            elif(key == 78 or key == 65614):
+                print('Bye!')
+                #saveExperimentData()
+                sys.exit(0)
+                
+    def playerInput(self):
+        playerChoice = random.choice(self.actionList)
+        
+        while self.step(self.timeStep) != -1 and self.currentlyPlaying:
+            keypress = self.keyboard.getKey()
+            # #ASCII character numbers of 'r'/'R','p'/'P' and 's'/'S'
+            # #(using arrows all returned value 0)    
+            if keypress == 82:# or keypress == 114:
+                #image = cv2.imread(r'..\..\img\rock.png')
+                #cv2.imshow('Your choice', image)
+                #cv2.waitKey(5)
+                playerChoice = self.actionList[0]
+                self.currentlyPlaying = False
+                break
+            elif keypress == 80:# or keypress == 112:
+                #image = cv2.imread(r'..\..\img\paper.png')
+                #cv2.imshow('Your choice', image)
+                #cv2.waitKey(5)
+                playerChoice = self.actionList[1]
+                self.currentlyPlaying = False
+                break
+            elif keypress == 83:# or keypress == 115:
+                #image = cv2.imread(r'..\..\img\scissors.png')
+                #cv2.imshow('Your choice', image)
+                #cv2.waitKey(5)
+                playerChoice = self.actionList[2]
+                self.currentlyPlaying = False
+                break
+                
         return playerChoice
+            
+    # def playerChooses(self, hint):
+    #    Player chooses best move and always trusts the hint
+        # playerChoice = self.bestMove(hint)
+        # print('Player choice: ', playerChoice)
+        # return playerChoice
 
 
     def chooseOption(self, truthOfHint, hint):
-        if truthOfHint == 'True':
+        if truthOfHint == 'Truth':
             return hint
         if truthOfHint == 'Lie':
             return self.bestLieMove(hint)
@@ -127,14 +168,14 @@ class LyingNao(Robot):
 
     def truthLieOrNothing(self):
         return random.choice(self.lieList)
-        
-    def audioNao(self, value):
-        if value == "Lie":
-            self.engine.say("I am going to Lie!")
-        if value == "True":
-            self.engine.say("Trust me I will tell the truth")
-        self.engine.runAndWait()
-        self.engine.stop()
+       
+    # def audioNao(self, value):
+        # if value == "Lie":
+            # self.engine.say("I am going to lie!")
+        # if value == "True":
+            # self.engine.say("Trust me I will tell the truth")
+        # self.engine.runAndWait()
+        # self.engine.stop()
 
 
 robot = LyingNao()
