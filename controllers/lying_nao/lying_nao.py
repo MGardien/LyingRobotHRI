@@ -68,36 +68,74 @@ class LyingNao(Robot):
         self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
 
 
+        self.unusedArm = self.getMotor('ArmUpperL')
+        self.unusedArm.setPosition(1.5)
 
 
         self.shoulder = self.getMotor('ShoulderR')
         self.armupper = self.getMotor('ArmUpperR')
+        self.armdown = self.getMotor('ArmLowerR')
         self.shoulder.setVelocity(1)
         self.armupper.setVelocity(1)
+        self.armdown.setVelocity(1)
+
+        self.head = self.getMotor('Head')
+        self.neck = self.getMotor('Neck')
+        self.neck.setVelocity(1)
+
+
+        self.head.setPosition(-0.4)
+        # self.neck.setPosition(-1)
 
         print('reached after shoulder')
 
-        self.moveBaseOp3()
-        sleep(1)
-        self.moveRightOp3()
+
+        # self.moveMiddle()
+        self.moveLeft()
+        # self.moveRight()
+        # self.moveBase()
+
+        # self.moveBase()
+        # sleep(10)
+        # print('sleep is done')
+        # self.moveLeft()
+        # self.moveRight()
 
 
-    def moveBaseOp3(self):
+    def moveMiddle(self):
+        self.head.setPosition(-0.5)
+        self.neck.setPosition(-1)
+
+        self.armdown.setPosition(0.5)
+        self.shoulder.setPosition(1)
+        self.armupper.setPosition(-0.5)
+
+    def moveBase(self):
+        self.head.setPosition(-0.1)
+        self.neck.setPosition(-1)
+
+        self.armdown.setPosition(0)
         self.shoulder.setPosition(0)
         self.armupper.setPosition(-1.5)
 
-    def moveLeftOp3(self):
+    def moveLeft(self):
+        self.head.setPosition(-0.5)
+        self.neck.setPosition(-1.5)
+
+        self.armdown.setPosition(0)
         self.shoulder.setPosition(0)
         self.armupper.setPosition(-0.5)
 
-    def moveRightOp3(self):
+    def moveRight(self):
+        self.head.setPosition(-0.5)
+        self.neck.setPosition(-0.5)
+
+        self.armdown.setPosition(0)
         self.shoulder.setPosition(1)
-        self.armupper.setPosition(-1.5)
+        self.armupper.setPosition(-1.6)
 
 
-    def turn_head(self):
-        self.headyaw.setVelocity(1)
-        self.headyaw.setPosition(-0.6)
+
 
 
 
