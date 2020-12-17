@@ -25,32 +25,36 @@ class LyingNao(Robot):
         self.state = 0 # Idle starts for selecting different states
 
         # Sensors init
-        self.gps = self.getGPS('gps')
-        self.gps.enable(self.timeStep)
+        # self.gps = self.getGPS('gps')
+        # self.gps.enable(self.timeStep)
 
         self.step(self.timeStep) # Execute one step to get the initial position
 
-        self.cameraTop = self.getCamera("CameraTop")
-        self.cameraBottom = self.getCamera("CameraBottom")
-        self.cameraTop.enable(4 * self.timeStep)
-        self.cameraBottom.enable(4 * self.timeStep)
+        # self.cameraTop = self.getCamera("CameraTop")
+        # self.cameraBottom = self.getCamera("CameraBottom")
+        # self.cameraTop.enable(4 * self.timeStep)
+        # self.cameraBottom.enable(4 * self.timeStep)
 
         self.currentlyPlaying = True
 
         # Initialize arm joints
-        self.elbowyaw = self.getMotor('RElbowYaw')
-        self.elbowroll= self.getMotor('RElbowRoll')
-        self.shoulderpitch = self.getMotor('RShoulderPitch')
-        self.shoulderpitch.getPositionSensor().enable(1)
-        self.shoulderroll = self.getMotor('RShoulderRoll')
-        self.shoulderroll.getPositionSensor().enable(1)
-        self.headyaw = self.getMotor('HeadYaw')
-        self.headpitch = self.getMotor('HeadPitch')
+        # self.elbowyaw = self.getMotor('RElbowYaw')
+        # self.elbowroll= self.getMotor('RElbowRoll')
+        # self.shoulderpitch = self.getMotor('RShoulderPitch')
+        #
+        #
+        # self.shoulderpitch.getPositionSensor().enable(1)
+        # self.shoulderroll = self.getMotor('RShoulderRoll')
+        # self.shoulderroll.getPositionSensor().enable(1)
 
 
-        self.actionList = ['Rock', 'Paper', 'Scissors']
-        self.lieList = ['True', 'Lie', 'Nothing']
-        self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
+        # self.headyaw = self.getMotor('HeadYaw')
+        # self.headpitch = self.getMotor('HeadPitch')
+
+        # self.rollmin, self.rollmax = -1.3260, 0.3140
+        # self.pitchmin, self.pitchmax = -2.0850, 2.0850
+        # self.shoulderroll.setVelocity(1)
+        # self.shoulderpitch.setVelocity(1)
 
         # count = 0
         # while count<15:
@@ -58,45 +62,44 @@ class LyingNao(Robot):
         #     self.playPipeline()
         #     count+=1
 
-        self.rollmin, self.rollmax = -1.3260, 0.3140
-        self.pitchmin, self.pitchmax = -2.0850, 2.0850
-        self.shoulderroll.setVelocity(1)
-        self.shoulderpitch.setVelocity(1)
 
-        self.basePosition()
-        self.turn_head()
+        self.actionList = ['Rock', 'Paper', 'Scissors']
+        self.lieList = ['True', 'Lie', 'Nothing']
+        self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
 
-        self.straightenArm()
-        # self.moveArmRight()
-        # self.moveArmLeft()
+
+
+
+        self.shoulder = self.getMotor('ShoulderR')
+        self.armupper = self.getMotor('ArmUpperR')
+        self.shoulder.setVelocity(1)
+        self.armupper.setVelocity(1)
+
+        print('reached after shoulder')
+
+        self.moveBaseOp3()
+        sleep(1)
+        self.moveRightOp3()
+
+
+    def moveBaseOp3(self):
+        self.shoulder.setPosition(0)
+        self.armupper.setPosition(-1.5)
+
+    def moveLeftOp3(self):
+        self.shoulder.setPosition(0)
+        self.armupper.setPosition(-0.5)
+
+    def moveRightOp3(self):
+        self.shoulder.setPosition(1)
+        self.armupper.setPosition(-1.5)
 
 
     def turn_head(self):
         self.headyaw.setVelocity(1)
         self.headyaw.setPosition(-0.6)
 
-    def basePosition(self):
-        print('base position')
-        self.shoulderroll.setPosition(0)
-        self.shoulderpitch.setPosition(0.5*self.pitchmax)
 
-    def moveArmRight(self):
-        print('move arm right')
-        self.shoulderroll.setPosition(0.5*self.rollmin)
-        self.shoulderpitch.setPosition(0.7*self.pitchmax)
-        # self
-
-    def moveArmLeft(self):
-        print('move arm left')
-        self.shoulderroll.setPosition(self.rollmax)
-        self.shoulderpitch.setPosition(0.3*self.pitchmax)
-
-
-    def straightenArm(self):
-        print("Straighten Arm")
-        rolmin = 0.0345
-        self.elbowroll.setPosition(rolmin)
-        self.elbowroll.setVelocity(1)
 
     def playPipeline(self):
         truthOfHint = self.truthLieOrNothing()
