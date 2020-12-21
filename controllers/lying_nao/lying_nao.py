@@ -146,6 +146,14 @@ class LyingRobot(Robot):
         self.armdown.setPosition(0)
         self.shoulder.setPosition(1)
         self.armupper.setPosition(-1.6)
+        
+    def expressChoice(self,naoChoice):
+        if naoChoice == 'Rock':
+            self.moveLeft()
+        elif naoChoice == 'Paper':
+            self.moveMiddle()
+        elif naoChoice == 'Scissors':
+            self.moveRight()
        
 
     def playPipeline(self):
@@ -158,6 +166,7 @@ class LyingRobot(Robot):
         playerChoice = self.playerInput()
         print('Your choice was: ', playerChoice)
         naoChoice = self.chooseOption(truthOfHint, hint)
+        self.expressChoice(naoChoice)
         print('Nao\'s Choice: ', naoChoice, '\n')
 #       playerChoice = self.playerChooses(hint)
         self.whoWon(naoChoice, playerChoice)
