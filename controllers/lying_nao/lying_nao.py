@@ -63,7 +63,7 @@ class LyingRobot(Robot):
         self.actionList = ['Rock', 'Paper', 'Scissors']
         self.lieList = ['True', 'Lie', 'Nothing']
         self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
-
+        self.choiceLock = False
 
         self.unusedArm = self.getMotor('ArmUpperL')
         self.unusedArm.setPosition(1.5)
@@ -189,10 +189,10 @@ class LyingRobot(Robot):
     def playerAnswer(self):
         while self.step(self.timeStep) != -1 and self.currentlyPlaying:
             key = self.keyboard.getKey()
-            if(key == 89 or key == 65625):
+            if(key == ord('Y')):
                 print('Great, let\'s start!')
                 break;
-            elif(key == 78 or key == 65614):
+            elif(key == ord('N')):
                 print('Bye!')
                 #saveExperimentData()
                 sys.exit(0)
@@ -201,30 +201,26 @@ class LyingRobot(Robot):
         playerChoice = random.choice(self.actionList)
         
         while self.step(self.timeStep) != -1 and self.currentlyPlaying:
-            keypress = self.keyboard.getKey()
-            # #ASCII character numbers of 'r'/'R','p'/'P' and 's'/'S'
-            # #(using arrows all returned value 0)    
-            if keypress == 82:# or keypress == 114:
-                #image = cv2.imread(r'..\..\img\rock.png')
-                #cv2.imshow('Your choice', image)
-                #cv2.waitKey(5)
-                playerChoice = self.actionList[0]
-                self.currentlyPlaying = False
-                break
-            elif keypress == 80:# or keypress == 112:
-                #image = cv2.imread(r'..\..\img\paper.png')
-                #cv2.imshow('Your choice', image)
-                #cv2.waitKey(5)
-                playerChoice = self.actionList[1]
-                self.currentlyPlaying = False
-                break
-            elif keypress == 83:# or keypress == 115:
-                #image = cv2.imread(r'..\..\img\scissors.png')
-                #cv2.imshow('Your choice', image)
-                #cv2.waitKey(5)
-                playerChoice = self.actionList[2]
-                self.currentlyPlaying = False
-                break
+            key = self.keyboard.getKey()
+            if not self.choiceLock: 
+                if key == ord('R'):
+                    print('You choose Rock')
+                    playerChoice = self.actionList[0]
+                    self.choiceLock = True
+                    self.currentlyPlaying = False
+                    break
+                elif key == ord('P'):  
+                    print('You choose Paper')         
+                    playerChoice = self.actionList[1]
+                    self.choiceLock = True
+                    self.currentlyPlaying = False
+                    break
+                elif key == ord('S'):  
+                    print('You choose Scissors')       
+                    playerChoice = self.actionList[2]
+                    self.choiceLock = True
+                    self.currentlyPlaying = False
+                    break
         return playerChoice
             
     # def playerChooses(self, hint):
@@ -283,6 +279,9 @@ count = 0
 while count<15:
     print('Iteration:', count,'\n')
     robot.playPipeline()
+    print('Ready for the next game? (Y/N)')
+    robot.playerAnswer()
+    robot.choiceLock = False
     count+=1
 
 print('finished')
