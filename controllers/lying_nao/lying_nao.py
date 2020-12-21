@@ -1,7 +1,7 @@
 """Rock, Paper, Scissors, the lying Nao"""
 
 # Bram Pol - s4815521
-# Max Gardien
+# Max Gardien - s4707931
 # Britt van Gemert - s4555740
 # Veronne Reinders - s4603478
 
@@ -34,10 +34,70 @@ class LyingRobot(Robot):
 
         self.currentlyPlaying = True
 
+        # Initialize arm joints
+        # self.elbowyaw = self.getMotor('RElbowYaw')
+        # self.elbowroll= self.getMotor('RElbowRoll')
+        # self.shoulderpitch = self.getMotor('RShoulderPitch')
+        #
+        #
+        # self.shoulderpitch.getPositionSensor().enable(1)
+        # self.shoulderroll = self.getMotor('RShoulderRoll')
+        # self.shoulderroll.getPositionSensor().enable(1)
+
+
+        # self.headyaw = self.getMotor('HeadYaw')
+        # self.headpitch = self.getMotor('HeadPitch')
+
+        # self.rollmin, self.rollmax = -1.3260, 0.3140
+        # self.pitchmin, self.pitchmax = -2.0850, 2.0850
+        # self.shoulderroll.setVelocity(1)
+        # self.shoulderpitch.setVelocity(1)
+
+        # count = 0
+        # while count<15:
+        #     print('Iteration:', count,'\n')
+        #     self.playPipeline()
+        #     count+=1
+
+
         self.actionList = ['Rock', 'Paper', 'Scissors']
         self.lieList = ['True', 'Lie', 'Nothing']
         self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
-        
+
+
+        self.unusedArm = self.getMotor('ArmUpperL')
+        self.unusedArm.setPosition(1.5)
+
+
+        self.shoulder = self.getMotor('ShoulderR')
+        self.armupper = self.getMotor('ArmUpperR')
+        self.armdown = self.getMotor('ArmLowerR')
+        self.shoulder.setVelocity(1)
+        self.armupper.setVelocity(1)
+        self.armdown.setVelocity(1)
+
+        self.head = self.getMotor('Head')
+        self.neck = self.getMotor('Neck')
+        self.neck.setVelocity(1)
+
+
+        self.head.setPosition(-0.4)
+        # self.neck.setPosition(-1)
+
+        print('reached after shoulder')
+
+
+        # self.moveMiddle()
+        self.moveLeft()
+        # self.moveRight()
+        # self.moveBase()
+
+        # self.moveBase()
+        # sleep(10)
+        # print('sleep is done')
+        # self.moveLeft()
+        # self.moveRight()
+
         self.speakList = ['I am going to play ', 'I made my choice, this time I will play ', 'This time I will play ', 'I choose ', 'I decided to play ']
         
         self.engine = pyttsx3.init()
@@ -54,6 +114,39 @@ class LyingRobot(Robot):
         print('Hi! Do you want to play a game with me? (Y/N)')
         
         self.playerAnswer()
+
+    def moveMiddle(self):
+        self.head.setPosition(-0.5)
+        self.neck.setPosition(-1)
+
+        self.armdown.setPosition(0.5)
+        self.shoulder.setPosition(1)
+        self.armupper.setPosition(-0.5)
+
+    def moveBase(self):
+        self.head.setPosition(-0.1)
+        self.neck.setPosition(-1)
+
+        self.armdown.setPosition(0)
+        self.shoulder.setPosition(0)
+        self.armupper.setPosition(-1.5)
+
+    def moveLeft(self):
+        self.head.setPosition(-0.5)
+        self.neck.setPosition(-1.5)
+
+        self.armdown.setPosition(0)
+        self.shoulder.setPosition(0)
+        self.armupper.setPosition(-0.5)
+
+    def moveRight(self):
+        self.head.setPosition(-0.5)
+        self.neck.setPosition(-0.5)
+
+        self.armdown.setPosition(0)
+        self.shoulder.setPosition(1)
+        self.armupper.setPosition(-1.6)
+       
 
     def playPipeline(self):
         truthOfHint = self.truthLieOrNothing()
@@ -87,6 +180,11 @@ class LyingRobot(Robot):
             print('You won!')
         if playerChoice == 'Scissors' and naoChoice == 'Paper':
             print('You won!')
+
+    def playerChooses(self, hint):
+        # Player chooses best move and always trusts the hint
+        playerChoice = self.bestMove(hint)
+        print('Player choice: ', playerChoice)
 
     def playerAnswer(self):
         while self.step(self.timeStep) != -1 and self.currentlyPlaying:
@@ -127,7 +225,6 @@ class LyingRobot(Robot):
                 playerChoice = self.actionList[2]
                 self.currentlyPlaying = False
                 break
-                
         return playerChoice
             
     # def playerChooses(self, hint):
