@@ -1,4 +1,4 @@
-"""Rock, Paper, Scissors, the lying Nao"""
+"""Rock, Paper, Scissors, the lying robot"""
 
 # Bram Pol - s4815521
 # Max Gardien - s4707931
@@ -148,12 +148,12 @@ class LyingRobot(Robot):
         self.shoulder.setPosition(1)
         self.armupper.setPosition(-1.6)
         
-    def expressChoice(self,naoChoice):
-        if naoChoice == 'Rock':
+    def expressChoice(self,robotChoice):
+        if robotChoice == 'Rock':
             self.moveLeft()
-        elif naoChoice == 'Paper':
+        elif robotChoice == 'Paper':
             self.moveMiddle()
-        elif naoChoice == 'Scissors':
+        elif robotChoice == 'Scissors':
             self.moveRight()
        
 
@@ -162,33 +162,33 @@ class LyingRobot(Robot):
         #print('truthOfHint (hidden) ', truthOfHint)
         hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
-            self.audioNao(hint)
+            self.audioRobot(hint)
         print('Please make your choice:')
         playerChoice = self.playerInput()
         print('Your choice was: ', playerChoice)
-        naoChoice = self.chooseOption(truthOfHint, hint)
-        self.expressChoice(naoChoice)
-        print('Nao\'s Choice: ', naoChoice, '\n')
+        robotChoice = self.chooseOption(truthOfHint, hint)
+        self.expressChoice(robotChoice)
+        print('Robot\'s Choice: ', robotChoice, '\n')
 #       playerChoice = self.playerChooses(hint)
-        self.whoWon(naoChoice, playerChoice)
+        self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
 
         print('\n------------------------------\n\n')
 
-    def whoWon(self, naoChoice, playerChoice):
-        if naoChoice == 'Paper' and playerChoice == 'Rock':
+    def whoWon(self, robotChoice, playerChoice):
+        if robotChoice == 'Paper' and playerChoice == 'Rock':
             print('I won!')
-        if naoChoice == 'Rock' and playerChoice == 'Scissors':
+        if robotChoice == 'Rock' and playerChoice == 'Scissors':
             print('I won!')
-        if naoChoice == 'Scissors' and playerChoice == 'Paper':
+        if robotChoice == 'Scissors' and playerChoice == 'Paper':
             print('I won!')
-        if naoChoice == playerChoice:
+        if robotChoice == playerChoice:
             print('It\'s a tie!')
-        if playerChoice == 'Paper' and naoChoice == 'Rock':
+        if playerChoice == 'Paper' and robotChoice == 'Rock':
             print('You won!')
-        if playerChoice == 'Rock' and naoChoice == 'Scissors':
+        if playerChoice == 'Rock' and robotChoice == 'Scissors':
             print('You won!')
-        if playerChoice == 'Scissors' and naoChoice == 'Paper':
+        if playerChoice == 'Scissors' and robotChoice == 'Paper':
             print('You won!')
 
     def playerChooses(self, hint):
@@ -276,7 +276,7 @@ class LyingRobot(Robot):
     def truthLieOrNothing(self):
         return random.choice(self.lieList)
        
-    def audioNao(self, value):
+    def audioRobot(self, value):
         if value == "Paper":
             self.speaker.speak("%s paper" % random.choice(self.speakList), 1)
         elif value == "Rock":
