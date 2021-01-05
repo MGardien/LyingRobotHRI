@@ -113,6 +113,7 @@ class LyingRobot(Robot):
         
         print('Hi! Do you want to play a game with me? (Y/N)')
         
+        
         self.playerAnswer()
 
     def moveMiddle(self):
