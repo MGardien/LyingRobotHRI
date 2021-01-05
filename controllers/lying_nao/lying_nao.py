@@ -1,4 +1,4 @@
-"""Rock, Paper, Scissors, the lying Nao"""
+"""Rock, Paper, Scissors, the lying robot"""
 
 # Bram Pol - s4815521
 # Max Gardien - s4707931
@@ -154,12 +154,12 @@ class LyingRobot(Robot):
         self.shoulder.setPosition(1)
         self.armupper.setPosition(-1.6)
         
-    def expressChoice(self,naoChoice):
-        if naoChoice == 'Rock':
+    def expressChoice(self,robotChoice):
+        if robotChoice == 'Rock':
             self.moveLeft()
-        elif naoChoice == 'Paper':
+        elif robotChoice == 'Paper':
             self.moveMiddle()
-        elif naoChoice == 'Scissors':
+        elif robotChoice == 'Scissors':
             self.moveRight()
        
 
@@ -168,33 +168,33 @@ class LyingRobot(Robot):
         #print('truthOfHint (hidden) ', truthOfHint)
         hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
-            self.audioNao(hint)
-        print('Please make your choice:')
+            self.audioRobot(hint)
+        print('Please make your choice: (R/P/S)')
         playerChoice = self.playerInput()
         print('Your choice was: ', playerChoice)
-        naoChoice = self.chooseOption(truthOfHint, hint)
-        self.expressChoice(naoChoice)
-        print('Nao\'s Choice: ', naoChoice, '\n')
+        robotChoice = self.chooseOption(truthOfHint, hint)
+        self.expressChoice(robotChoice)
+        print('Robot\'s Choice: ', robotChoice, '\n')
 #       playerChoice = self.playerChooses(hint)
-        self.whoWon(naoChoice, playerChoice)
+        self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
 
         print('\n------------------------------\n\n')
 
-    def whoWon(self, naoChoice, playerChoice):
-        if naoChoice == 'Paper' and playerChoice == 'Rock':
+    def whoWon(self, robotChoice, playerChoice):
+        if robotChoice == 'Paper' and playerChoice == 'Rock':
             print('I won!')
-        if naoChoice == 'Rock' and playerChoice == 'Scissors':
+        if robotChoice == 'Rock' and playerChoice == 'Scissors':
             print('I won!')
-        if naoChoice == 'Scissors' and playerChoice == 'Paper':
+        if robotChoice == 'Scissors' and playerChoice == 'Paper':
             print('I won!')
-        if naoChoice == playerChoice:
+        if robotChoice == playerChoice:
             print('It\'s a tie!')
-        if playerChoice == 'Paper' and naoChoice == 'Rock':
+        if playerChoice == 'Paper' and robotChoice == 'Rock':
             print('You won!')
-        if playerChoice == 'Rock' and naoChoice == 'Scissors':
+        if playerChoice == 'Rock' and robotChoice == 'Scissors':
             print('You won!')
-        if playerChoice == 'Scissors' and naoChoice == 'Paper':
+        if playerChoice == 'Scissors' and robotChoice == 'Paper':
             print('You won!')
 
     def playerChooses(self, hint):
@@ -207,7 +207,7 @@ class LyingRobot(Robot):
             key = self.keyboard.getKey()
             if(key == ord('Y')):
                 print('Great, let\'s start!')
-                break;
+                break
             elif(key == ord('N')):
                 print('Bye!')
                 #saveExperimentData()
@@ -291,13 +291,93 @@ class LyingRobot(Robot):
     def truthLieOrNothing(self):
         return random.choice(self.lieList)
        
-    def audioNao(self, value):
+    def audioRobot(self, value):
         if value == "Paper":
             self.speaker.speak("%s paper" % random.choice(self.speakList), 1)
         elif value == "Rock":
             self.speaker.speak("%s rock" % random.choice(self.speakList), 1)
         else:
             self.speaker.speak("%s scissors" % random.choice(self.speakList), 1)
+            
+            
+    # Reward function, 0 for tie, -1 for loss, 1 for win, might want to tune later
+    def rewardfunc(playermove, robotmove):
+        if playermove == 'Rock' and robotmove == 'Rock':
+            return 0
+        if playermove == 'Paper' and robotmove == 'Paper':
+            return 0
+        if playermove == 'Scissors' and robotmove == 'Scissors':
+            return 0
+        
+        if playermove == 'Rock' and robotmove == 'Paper':
+            return 1
+        if playermove == 'Rock' and robotmove == 'Scissors':
+            return -1
+        
+        if playermove == 'Paper' and robotmove == 'Scissors':
+            return 1
+        if playermove == 'Paper' and robotmove == 'Rock':
+            return -1
+    
+        if playermove == 'Scissors' and robotmove == 'Rock':
+            return 1
+        if playermove == 'Scissors' and robotmove == 'Paper':
+            return -1
+        
+    # Return the move that would have been the winning move considering the previous robot's choice
+    def repeatPreviousWin(previousChoice):
+        if previousChoice == 'Rock':
+            bestMove = 'Paper'
+        if previousChoice == 'Paper':
+            bestMove = 'Scissors'
+        if previousChoice == 'Scissors':
+            bestMove = 'Rock'
+        if previousChoice == 'Nothing':
+            bestMove = random.choice(self.actionList)
+        return bestMove
+    
+    
+    # Decide how the simulated player will choose an action based on the current state
+    def player_algorithm(state):
+        epsilon = 0.3
+        if random.uniform(0, 1) < epsilon:    
+            playermove = self.actionList[random.randint(0,len(self.actionList)-1)]
+        else:
+            if random.uniform(0, 1) < 0.7:
+                playermove = state[0][0]
+            else:
+                playermove = state[1][0]
+        # epsilon = 0.3
+        # if random.uniform(0, 1) < epsilon:    
+        #     playermove = self.actionList[random.randint(0,len(self.actionList)-1)]
+        # else:
+        #     old_rmove = state[0][1]
+        #     # print('old', old_rmove)
+        #     playermove = repeatPreviousWin(old_rmove)
+        #     # print('new', playermove)    
+        return playermove
+    
+    def nextstatefunc(state, action):
+        playermove = player_algorithm(state)
+        robotmove = extract_action(action)
+        hint = extract_hint(action)
+        
+        reward = rewardfunc(playermove, robotmove)
+        
+        # First game in state tuple is most recent
+        # Therefore first index old state becomes second index new state
+        # And the current game becomes the first index of new state
+        currentgame = (playermove, robotmove, hint)
+        nextstate = (currentgame ,state[0])
+        return nextstate, reward
+          
+        
+    def extract_action(action):
+        return action[1]
+        
+    def extract_hint(action):
+        return action[0]
+    
     
 robot = LyingRobot(camera = False)
 count = 0
