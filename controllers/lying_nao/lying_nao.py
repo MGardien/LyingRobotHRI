@@ -173,6 +173,9 @@ class LyingRobot(Robot):
         elif robotChoice == 'Scissors':
             self.moveRight()
        
+    def saveExperimentData(self):
+        df = pd.DataFrame({'hints':robot.all_hints,'player':robot.all_player_moves,'robot':robot.all_robot_moves,'outcome':robot.all_outcomes})
+        df.to_excel('../../data/'+robot.experimenter+robot.participant+'.xlsx') 
 
     def playPipeline(self):
         truthOfHint = self.truthLieOrNothing()
@@ -235,7 +238,7 @@ class LyingRobot(Robot):
             elif(key == ord('N')):
                 self.speaker.speak('Okay, bye', 1)
                 print('Bye!')
-                #saveExperimentData()
+                self.saveExperimentData()
                 sys.exit(0)
                 
     def playerInput(self):
@@ -400,7 +403,7 @@ class LyingRobot(Robot):
     
 robot = LyingRobot(camera = False)
 count = 0
-while count<3:
+while count<15:
     print('Iteration:', count,'\n')
     robot.playPipeline()
     robot.speaker.speak('Are you ready for the next game?', 1)
@@ -411,12 +414,6 @@ while count<3:
     robot.push_s.setPosition(float(2.47))
     robot.choiceLock = False
     count+=1
-
-print(len(robot.all_hints))
-print(len(robot.all_player_moves))
-print(len(robot.all_robot_moves))
-print(len(robot.all_outcomes))
-df = pd.DataFrame({'hints':robot.all_hints,'player':robot.all_player_moves,'robot':robot.all_robot_moves,'outcome':robot.all_outcomes})
-df.to_excel('../../data/'+robot.experimenter+robot.participant+'.xlsx') 
+robot.saveExperimentData()
 print('finished')
 
