@@ -7,6 +7,7 @@
 
 from controller import Robot, Keyboard, Display, Motion, Motor, Camera, Speaker
 import numpy as np
+import pandas as pd
 import cv2
 from io import BytesIO
 import threading
@@ -59,6 +60,13 @@ class LyingRobot(Robot):
         #     self.playPipeline()
         #     count+=1
 
+        self.experimenter = 'mg'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
+        self.participant = '1'         #Edit the participant here  !!!
+
+        self.all_hints = []
+        self.all_player_moves = []
+        self.all_robot_moves = []
+        self.all_outcomes = []
 
         self.actionList = ['Rock', 'Paper', 'Scissors']
         self.lieList = ['True', 'Lie', 'Nothing']
@@ -159,14 +167,17 @@ class LyingRobot(Robot):
 
     def playPipeline(self):
         truthOfHint = self.truthLieOrNothing()
+        self.all_hints.append(truthOfHint)
         #print('truthOfHint (hidden) ', truthOfHint)
         hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
             self.audioRobot(hint)
         print('Please make your choice: (R/P/S)')
         playerChoice = self.playerInput()
+        self.all_player_moves.append(playerChoice)
         print('Your choice was: ', playerChoice)
         robotChoice = self.chooseOption(truthOfHint, hint)
+        self.all_robot_moves.append(robotChoice)
         self.expressChoice(robotChoice)
         print('Robot\'s Choice: ', robotChoice, '\n')
 #       playerChoice = self.playerChooses(hint)
@@ -178,18 +189,25 @@ class LyingRobot(Robot):
     def whoWon(self, robotChoice, playerChoice):
         if robotChoice == 'Paper' and playerChoice == 'Rock':
             print('I won!')
-        if robotChoice == 'Rock' and playerChoice == 'Scissors':
+            self.all_outcomes.append('Robot won')
+        elif robotChoice == 'Rock' and playerChoice == 'Scissors':
             print('I won!')
-        if robotChoice == 'Scissors' and playerChoice == 'Paper':
+            self.all_outcomes.append('Robot won')
+        elif robotChoice == 'Scissors' and playerChoice == 'Paper':
             print('I won!')
-        if robotChoice == playerChoice:
+            self.all_outcomes.append('Robot won')
+        elif robotChoice == playerChoice:
             print('It\'s a tie!')
-        if playerChoice == 'Paper' and robotChoice == 'Rock':
+            self.all_outcomes.append('Tie')
+        elif playerChoice == 'Paper' and robotChoice == 'Rock':
             print('You won!')
-        if playerChoice == 'Rock' and robotChoice == 'Scissors':
+            self.all_outcomes.append('Player wins')
+        elif playerChoice == 'Rock' and robotChoice == 'Scissors':
             print('You won!')
-        if playerChoice == 'Scissors' and robotChoice == 'Paper':
+            self.all_outcomes.append('Player wins')
+        elif playerChoice == 'Scissors' and robotChoice == 'Paper':
             print('You won!')
+            self.all_outcomes.append('Player wins')
 
     def playerChooses(self, hint):
         # Player chooses best move and always trusts the hint
@@ -366,7 +384,7 @@ class LyingRobot(Robot):
     
 robot = LyingRobot(camera = False)
 count = 0
-while count<15:
+while count<3:
     print('Iteration:', count,'\n')
     robot.playPipeline()
     print('Ready for the next game? (Y/N)')
@@ -374,5 +392,11 @@ while count<15:
     robot.choiceLock = False
     count+=1
 
+print(len(robot.all_hints))
+print(len(robot.all_player_moves))
+print(len(robot.all_robot_moves))
+print(len(robot.all_outcomes))
+df = pd.DataFrame({'hints':robot.all_hints,'player':robot.all_player_moves,'robot':robot.all_robot_moves,'outcome':robot.all_outcomes})
+df.to_excel('../../data/'+robot.experimenter+robot.participant+'.xlsx') 
 print('finished')
 
