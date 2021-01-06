@@ -7,6 +7,8 @@
 
 from controller import Robot, Keyboard, Display, Motion, Motor, Camera, Speaker, ImageRef
 import numpy as np
+import itertools
+
 import pandas as pd
 import cv2
 from io import BytesIO
@@ -60,18 +62,29 @@ class LyingRobot(Robot):
         #     self.playPipeline()
         #     count+=1
 
-        self.experimenter = 'mg'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
-        self.participant = '1'         #Edit the participant here  !!!
+        self.experimenter = 'bp'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
+        self.participant = '2'         #Edit the participant here  !!!
 
         self.all_hints = []
         self.all_player_moves = []
         self.all_robot_moves = []
         self.all_outcomes = []
+        self.all_states = []
 
         self.actionList = ['Rock', 'Paper', 'Scissors']
         self.lieList = ['True', 'Lie', 'Nothing']
         self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
         self.choiceLock = False
+        
+        self.onegame = [self.actionList, self.actionList, self.lieList]
+        self.firstgame = list(itertools.product(*self.onegame))
+        self.bothgames = [self.firstgame, self.firstgame]
+
+        self.statespace = list(itertools.product(*self.bothgames))
+        self.actionspace = list(itertools.product(*[self.lieList, self.actionList]))
+        
+        file2 = open("qmatrix", "rb")
+        self.qmatrix = np.load(file2)
 
         self.unusedArm = self.getMotor('ArmUpperL')
         self.unusedArm.setPosition(1.5)
@@ -130,6 +143,8 @@ class LyingRobot(Robot):
         
         self.playerAnswer()
 
+
+
     def moveMiddle(self):
         self.head.setPosition(-0.5)
         self.neck.setPosition(-1)
@@ -174,11 +189,45 @@ class LyingRobot(Robot):
         df = pd.DataFrame({'hints':robot.all_hints,'player':robot.all_player_moves,'robot':robot.all_robot_moves,'outcome':robot.all_outcomes})
         df.to_excel('../../data/'+robot.experimenter+robot.participant+'.xlsx') 
 
+    def hint_and_lie_to_action(self, hint):
+        if hint == 'Rock':
+            action = 'Scissors'
+        if hint == 'Paper':
+            action = 'Rock'
+        if hint == 'Scissors':
+            action = 'Paper'
+        return action
+    
+    def getIndicationAndActionFromState(self, state):
+        print(self.statespace.index(state))
+        indication = self.actionspace[np.argmax(self.qmatrix[self.statespace.index(state)])][0]
+        action = self.actionspace[np.argmax(self.qmatrix[self.statespace.index(state)])][1]
+        return indication, action
+
     def playPipeline(self):
-        truthOfHint = self.truthLieOrNothing()
+        # truthOfHint = self.truthLieOrNothing()
+        if len(self.all_states)>0:
+            state = self.all_states[-1]
+            # print('actually loaded last state')
+        else:
+            randomnumber = random.randint(0,len(self.statespace)-1)
+            state = self.statespace[randomnumber]
+            # print('randomly sampled state: ', randomnumber)
+            
+        truthOfHint, robotChoice = self.getIndicationAndActionFromState(state)
+        
+        # print(self.all_states)
+        if truthOfHint == 'Lie':
+            hint = self.hint_and_lie_to_action(robotChoice)
+        if truthOfHint == 'True':
+            hint = robotChoice
+        if truthOfHint == 'Nothing':
+            hint = 'Nothing'
+            
+            
         self.all_hints.append(truthOfHint)
         #print('truthOfHint (hidden) ', truthOfHint)
-        hint = self.giveHint(truthOfHint)
+        # hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
             self.audioRobot(hint)
         print('Please make your choice: (R/P/S)')
@@ -186,12 +235,18 @@ class LyingRobot(Robot):
         self.all_player_moves.append(playerChoice)
         print('Your choice was: ', playerChoice)
         robotChoice = self.chooseOption(truthOfHint, hint)
+        
+        currentgame = (playerChoice, robotChoice,truthOfHint)
+        newstate = (currentgame, state[0])
+        self.all_states.append(newstate)
+
         self.all_robot_moves.append(robotChoice)
         self.expressChoice(robotChoice)
         print('Robot\'s Choice: ', robotChoice, '\n')
 #       playerChoice = self.playerChooses(hint)
         self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
+
 
         print('\n------------------------------\n\n')
 
@@ -344,7 +399,7 @@ class LyingRobot(Robot):
             return -1
         
     # Return the move that would have been the winning move considering the previous robot's choice
-    def repeatPreviousWin(previousChoice):
+    def repeatPreviousWin(self, previousChoice):
         if previousChoice == 'Rock':
             bestMove = 'Paper'
         if previousChoice == 'Paper':
@@ -357,7 +412,7 @@ class LyingRobot(Robot):
     
     
     # Decide how the simulated player will choose an action based on the current state
-    def player_algorithm(state):
+    def player_algorithm(self, state):
         epsilon = 0.3
         if random.uniform(0, 1) < epsilon:    
             playermove = self.actionList[random.randint(0,len(self.actionList)-1)]
@@ -366,29 +421,22 @@ class LyingRobot(Robot):
                 playermove = state[0][0]
             else:
                 playermove = state[1][0]
-        # epsilon = 0.3
-        # if random.uniform(0, 1) < epsilon:    
-        #     playermove = self.actionList[random.randint(0,len(self.actionList)-1)]
-        # else:
-        #     old_rmove = state[0][1]
-        #     # print('old', old_rmove)
-        #     playermove = repeatPreviousWin(old_rmove)
-        #     # print('new', playermove)    
+
         return playermove
     
-    def nextstatefunc(state, action):
-        playermove = player_algorithm(state)
-        robotmove = extract_action(action)
-        hint = extract_hint(action)
+    # def nextstatefunc(state, action):
+    #     playermove = player_algorithm(state)
+    #     robotmove = extract_action(action)
+    #     hint = extract_hint(action)
         
-        reward = rewardfunc(playermove, robotmove)
+    #     reward = rewardfunc(playermove, robotmove)
         
-        # First game in state tuple is most recent
-        # Therefore first index old state becomes second index new state
-        # And the current game becomes the first index of new state
-        currentgame = (playermove, robotmove, hint)
-        nextstate = (currentgame ,state[0])
-        return nextstate, reward
+    #     # First game in state tuple is most recent
+    #     # Therefore first index old state becomes second index new state
+    #     # And the current game becomes the first index of new state
+    #     currentgame = (playermove, robotmove, hint)
+    #     nextstate = (currentgame ,state[0])
+    #     return nextstate, reward
           
         
     def extract_action(action):
