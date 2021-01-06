@@ -22,8 +22,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.0016841834784977567 -0.998586331001029 -0.053127234672190826 3.0783156673550947
-  position -0.25607023546479013 0.4493671230298687 -2.43480591712655
+  orientation -0.00014518873294013253 -0.9990409014664156 -0.043786483272845615 3.09905316196358
+  position -0.43141966404982546 0.39926748141508916 -2.6676133655162366
 }
 TexturedBackground {
   texture "empty_office"
@@ -294,38 +294,149 @@ RobotisOp3 {
   hidden angularVelocity_25 -0.06193019484087009 -1.0003419942776326 0.038539375259356544
   translation -0.40486278886597854 0.27869190746204214 -0.7716393238787866
   rotation -0.20578316975541777 0.6920704649830953 0.691875536887593 2.734175909522495
-  controller "lying_nao"
-  headSlot [
-    Shape {
-      appearance PBRAppearance {
-        baseColorMap ImageTexture {
-          url [
-            "../img/rps.jpeg"
+  leftFootSlot [
+    Transform {
+      translation 0.227054 -0.573275 0
+      rotation 0.44721725566478654 0.7745924428183596 -0.44721725566478654 1.82348
+      children [
+        SliderJoint {
+          jointParameters JointParameters {
+            position 2.4719999999999804
+          }
+          device [
+            LinearMotor {
+              name "push_paper"
+              maxPosition 2.485
+            }
           ]
+          endPoint Solid {
+            translation -0.0209609 0.099895 -0.3089629999999999
+            rotation -0.03961811632776106 0.9992148942337881 0 1.57079
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColorMap ImageTexture {
+                    url [
+                      "../img/SM-Papier.jpg"
+                    ]
+                  }
+                  metalness 0
+                  textureTransform TextureTransform {
+                    rotation 4.75
+                  }
+                }
+                geometry Box {
+                  size 0.1 0.1 0.1
+                }
+              }
+            ]
+          }
         }
-      }
-      geometry Box {
-        size 0.1 0.1 0.1
-      }
+      ]
     }
-  ]
-}
-Shape {
-}
-Robot {
-  translation 0 0.05 -1.04
-  children [
-    Shape {
-      appearance PBRAppearance {
-        baseColorMap ImageTexture {
-          url [
-            "../img/rps.jpeg"
+    Transform {
+      translation 0.227054 -0.573275 0
+      rotation 0.44721725566478654 0.7745924428183596 -0.44721725566478654 1.82348
+      children [
+        SliderJoint {
+          jointParameters JointParameters {
+            position 2.4719999999999804
+          }
+          device [
+            LinearMotor {
+              name "push_scissors"
+              maxPosition 2.48
+            }
           ]
+          endPoint Solid {
+            translation -0.0220221 0.209882 -0.3100209999999999
+            rotation -0.009647431607538996 0.999953462448817 0 1.5707896938995747
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColorMap ImageTexture {
+                    url [
+                      "../img/scissors2.jpg"
+                    ]
+                  }
+                  metalness 0
+                  textureTransform TextureTransform {
+                    rotation 4.75
+                  }
+                }
+                geometry Box {
+                  size 0.1 0.1 0.1
+                }
+              }
+            ]
+          }
         }
-      }
-      geometry Box {
-        size 0.1 0.1 0.01
-      }
+      ]
+    }
+    Transform {
+      children [
+        SliderJoint {
+          endPoint Solid {
+            translation 0.153096 -0.2772 0.119988
+            rotation 0 0.002299993916524136 0.9999973550104939 0.571011
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColorMap ImageTexture {
+                    url [
+                      "../img/choice.png"
+                    ]
+                    repeatS FALSE
+                    repeatT FALSE
+                  }
+                }
+                geometry Box {
+                  size 0.2 0.1 0.1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 0.227054 -0.573275 0
+      rotation 0.44721725566478654 0.7745924428183596 -0.44721725566478654 1.82348
+      children [
+        SliderJoint {
+          jointParameters JointParameters {
+            position 2.4719999999999804
+          }
+          device [
+            LinearMotor {
+              name "push_rock"
+              maxPosition 2.48
+            }
+          ]
+          endPoint Solid {
+            translation -0.0199009 -0.00999907 -0.2979020000000001
+            rotation -0.009647431607538996 0.999953462448817 0 1.5707896938995747
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColorMap ImageTexture {
+                    url [
+                      "../img/rock-03.jpg"
+                    ]
+                  }
+                  metalness 0
+                  textureTransform TextureTransform {
+                    rotation 4.75
+                  }
+                }
+                geometry Box {
+                  size 0.1 0.1 0.1
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
   controller "lying_nao"

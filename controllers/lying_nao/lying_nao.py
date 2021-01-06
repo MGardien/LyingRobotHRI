@@ -5,7 +5,7 @@
 # Britt van Gemert - s4555740
 # Veronne Reinders - s4603478
 
-from controller import Robot, Keyboard, Display, Motion, Motor, Camera, Speaker
+from controller import Robot, Keyboard, Display, Motion, Motor, Camera, Speaker, ImageRef
 import numpy as np
 import pandas as pd
 import cv2
@@ -118,6 +118,12 @@ class LyingRobot(Robot):
         self.engine = pyttsx3.init()
         self.audio_fn = "output.mp3"
         self.speaker = self.getSpeaker("Speaker")
+        
+        #display = self.getDisplay('display')
+        #img = display.imageLoad(self, '../img/rps.jpeg')
+        #height, width, channels = img.shape
+        #imageRef = display.imageNew(cv2.transpose(img).tolist(), Display.RGB, height, width)
+        #display.imagePaste(imageRef, 0, 0)
         
         print('Hi! Do you want to play a game with me? (Y/N)')
         
@@ -232,18 +238,27 @@ class LyingRobot(Robot):
             key = self.keyboard.getKey()
             if not self.choiceLock: 
                 if key == ord('R'):
+                    push_r = self.getMotor("push_rock")
+                    push_r.setPosition(float('inf'))
+                    push_r.setVelocity(0.1)
                     print('You choose Rock')
                     playerChoice = self.actionList[0]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('P'):  
+                    push_p = self.getMotor("push_paper")
+                    push_p.setPosition(float('inf'))
+                    push_p.setVelocity(0.1)
                     print('You choose Paper')         
                     playerChoice = self.actionList[1]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('S'):  
+                    push_s = self.getMotor("push_scissors")
+                    push_s.setPosition(float('inf'))
+                    push_s.setVelocity(0.1)
                     print('You choose Scissors')       
                     playerChoice = self.actionList[2]
                     self.choiceLock = True
