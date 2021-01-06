@@ -126,7 +126,8 @@ class LyingRobot(Robot):
         self.keyboard = self.getKeyboard()
         
         # Speaker
-        self.engine = pyttsx3.init('sapi5')
+        self.engine = pyttsx3.init()
+        # self.engine = pyttsx3.init('sapi5')
         self.audio_fn = "output.mp3"
         self.speaker = self.getSpeaker("Speaker")
         self.speaker.getEngine()
@@ -212,10 +213,42 @@ class LyingRobot(Robot):
         return action
     
     def getIndicationAndActionFromState(self, state):
-        print(self.statespace.index(state))
+        # print(self.statespace.index(state))
         indication = self.actionspace[np.argmax(self.qmatrix[self.statespace.index(state)])][0]
         action = self.actionspace[np.argmax(self.qmatrix[self.statespace.index(state)])][1]
         return indication, action
+
+    def learningStep(self, state, newstate, reward):
+        alpha = 0.6
+        gamma = 0.4
+        epsilon = 0.1
+        
+        state_space_index = self.statespace.index(state)
+        action_space_index = np.argmax(self.qmatrix[state_space_index])
+        
+        old_value = self.qmatrix[state_space_index, action_space_index]
+        
+        newindex = self.statespace.index(newstate)
+        newmax = np.max(self.qmatrix[newindex])
+        
+        new_value = (1 - alpha) * old_value + alpha * (reward + gamma * newmax)
+
+        self.qmatrix[state_space_index, action_space_index] = new_value
+        
+        
+        print('Changed old val: ', old_value, ' to new val: ', new_value)
+        self.saveToFile()
+        
+        
+    def saveToFile(self):
+        file = open("qmatrix", "wb")
+        np.save(file, self.qmatrix)
+        file.close
+        print('File saved')
+        
+        
+        
+        
 
     def playPipeline(self):
         # truthOfHint = self.truthLieOrNothing()
@@ -247,9 +280,9 @@ class LyingRobot(Robot):
         playerChoice = self.playerInput()
         self.all_player_moves.append(playerChoice)
         print('Your choice was: ', playerChoice)
-        robotChoice = self.chooseOption(truthOfHint, hint)
+        # robotChoice = self.chooseOption(truthOfHint, hint)
         
-        currentgame = (playerChoice, robotChoice,truthOfHint)
+        currentgame = (playerChoice, robotChoice, truthOfHint)
         newstate = (currentgame, state[0])
         self.all_states.append(newstate)
 
@@ -259,6 +292,9 @@ class LyingRobot(Robot):
 #       playerChoice = self.playerChooses(hint)
         self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
+        reward = self.rewardfunc(playerChoice, robotChoice)
+        self.learningStep(state, newstate, reward)
+        
 
 
         print('\n------------------------------\n\n')
@@ -392,7 +428,7 @@ class LyingRobot(Robot):
             
             
     # Reward function, 0 for tie, -1 for loss, 1 for win, might want to tune later
-    def rewardfunc(playermove, robotmove):
+    def rewardfunc(self, playermove, robotmove):
         if playermove == 'Rock' and robotmove == 'Rock':
             return 0
         if playermove == 'Paper' and robotmove == 'Paper':
@@ -465,8 +501,8 @@ class LyingRobot(Robot):
     
 robot = LyingRobot(camera = False)
 count = 0
-while count<15:
-    print('Iteration:', count,'\n')
+while count<50:
+    print('Iteration:', count,'/50 \n')
     if count > 0:    
         robot.speaker.speak('Are you ready for the next game?', 1)
         print('Ready for the next game? (Y/N)')
