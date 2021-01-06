@@ -92,9 +92,6 @@ class LyingRobot(Robot):
         self.head.setPosition(-0.4)
         # self.neck.setPosition(-1)
 
-        print('reached after shoulder')
-
-
         # self.moveMiddle()
         self.moveLeft()
         # self.moveRight()
@@ -405,15 +402,16 @@ robot = LyingRobot(camera = False)
 count = 0
 while count<15:
     print('Iteration:', count,'\n')
+    if count > 0:    
+        robot.speaker.speak('Are you ready for the next game?', 1)
+        print('Ready for the next game? (Y/N)')
+        robot.playerAnswer()
     robot.playPipeline()
-    robot.speaker.speak('Are you ready for the next game?', 1)
-    print('Ready for the next game? (Y/N)')
-    robot.playerAnswer()
     robot.push_r.setPosition(float(2.47))
     robot.push_p.setPosition(float(2.47))
     robot.push_s.setPosition(float(2.47))
     robot.choiceLock = False
     count+=1
 robot.saveExperimentData()
-print('finished')
+print('Session Finished')
 
