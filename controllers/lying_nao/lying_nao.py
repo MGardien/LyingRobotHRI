@@ -214,6 +214,8 @@ class LyingRobot(Robot):
         elif playerChoice == 'Scissors' and robotChoice == 'Paper':
             print('You won!')
             self.all_outcomes.append('Player wins')
+        else:
+            self.all_outcomes.append('No winner')
 
     def playerChooses(self, hint):
         # Player chooses best move and always trusts the hint
