@@ -276,7 +276,7 @@ class LyingRobot(Robot):
 
 
     def chooseOption(self, truthOfHint, hint):
-        if truthOfHint == 'Truth':
+        if truthOfHint == 'True':
             return hint
         if truthOfHint == 'Lie':
             return self.bestLieMove(hint)
