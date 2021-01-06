@@ -80,6 +80,8 @@ class LyingRobot(Robot):
         self.shoulder = self.getMotor('ShoulderR')
         self.armupper = self.getMotor('ArmUpperR')
         self.armdown = self.getMotor('ArmLowerR')
+        
+        
         self.shoulder.setVelocity(1)
         self.armupper.setVelocity(1)
         self.armdown.setVelocity(1)
@@ -88,15 +90,13 @@ class LyingRobot(Robot):
         self.neck = self.getMotor('Neck')
         self.neck.setVelocity(1)
 
-
         self.head.setPosition(-0.4)
         # self.neck.setPosition(-1)
 
-        print('reached after shoulder')
-
+        #print('reached after shoulder')
 
         # self.moveMiddle()
-        self.moveLeft()
+        self.moveLeftAndWave()
         # self.moveRight()
         # self.moveBase()
 
@@ -115,9 +115,10 @@ class LyingRobot(Robot):
         self.keyboard = self.getKeyboard()
         
         # Speaker
-        self.engine = pyttsx3.init()
+        self.engine = pyttsx3.init('sapi5')
         self.audio_fn = "output.mp3"
         self.speaker = self.getSpeaker("Speaker")
+        self.speaker.getEngine()
         
         # Motors
         self.push_r = self.getMotor("push_rock")
@@ -130,8 +131,22 @@ class LyingRobot(Robot):
         print('Hi! Do you want to play a game with me? (Y/N)')
         self.speaker.speak('Hi! Do you want to play a game with me?', 1)
         
+        self.moveLeft()
+        
         
         self.playerAnswer()
+
+    def moveLeftAndWave(self):
+        self.head.setPosition(-0.5)
+        self.neck.setPosition(-1)
+        
+        self.armupper.setPosition(1) 
+        #self.armupper.setPosition(-0.5)   
+
+        #self.armdown.setPosition(0)
+        #self.shoulder.setPosition(0)
+        #self.armupper.setPosition(-0.5)
+
 
     def moveMiddle(self):
         self.head.setPosition(-0.5)
@@ -184,6 +199,7 @@ class LyingRobot(Robot):
         hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
             self.audioRobot(hint)
+        self.speaker.speak('Lets play, rock paper scissors', 1)
         print('Please make your choice: (R/P/S)')
         playerChoice = self.playerInput()
         self.all_player_moves.append(playerChoice)
@@ -200,12 +216,15 @@ class LyingRobot(Robot):
 
     def whoWon(self, robotChoice, playerChoice):
         if robotChoice == 'Paper' and playerChoice == 'Rock':
+            self.speaker.speak('I won', 1)
             print('I won!')
             self.all_outcomes.append('Robot won')
         elif robotChoice == 'Rock' and playerChoice == 'Scissors':
+            self.speaker.speak('I won', 1)
             print('I won!')
             self.all_outcomes.append('Robot won')
         elif robotChoice == 'Scissors' and playerChoice == 'Paper':
+            self.speaker.speak('I won', 1)        
             print('I won!')
             self.all_outcomes.append('Robot won')
         elif robotChoice == playerChoice:
@@ -249,21 +268,21 @@ class LyingRobot(Robot):
             if not self.choiceLock: 
                 if key == ord('R'):
                     self.push_r.setPosition(float(2.485))
-                    print('You choose Rock')
+                    #print('You choose Rock')
                     playerChoice = self.actionList[0]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('P'):  
                     self.push_p.setPosition(float(2.48))
-                    print('You choose Paper')         
+                    #print('You choose Paper')         
                     playerChoice = self.actionList[1]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('S'):  
                     self.push_s.setPosition(float(2.48))
-                    print('You choose Scissors')       
+                    #print('You choose Scissors')       
                     playerChoice = self.actionList[2]
                     self.choiceLock = True
                     self.currentlyPlaying = False
