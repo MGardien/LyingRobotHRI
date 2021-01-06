@@ -128,6 +128,7 @@ class LyingRobot(Robot):
         self.push_s.setPosition(float(2.47))
         
         print('Hi! Do you want to play a game with me? (Y/N)')
+        self.speaker.speak('Hi! Do you want to play a game with me?', 1)
         
         
         self.playerAnswer()
@@ -216,6 +217,8 @@ class LyingRobot(Robot):
         elif playerChoice == 'Scissors' and robotChoice == 'Paper':
             print('You won!')
             self.all_outcomes.append('Player wins')
+        else:
+            self.all_outcomes.append('No winner')
 
     def playerChooses(self, hint):
         # Player chooses best move and always trusts the hint
@@ -226,9 +229,11 @@ class LyingRobot(Robot):
         while self.step(self.timeStep) != -1 and self.currentlyPlaying:
             key = self.keyboard.getKey()
             if(key == ord('Y')):
+                self.speaker.speak('Great, lets start!', 1)
                 print('Great, let\'s start!')
                 break
             elif(key == ord('N')):
+                self.speaker.speak('Okay, bye', 1)
                 print('Bye!')
                 #saveExperimentData()
                 sys.exit(0)
@@ -270,7 +275,7 @@ class LyingRobot(Robot):
 
 
     def chooseOption(self, truthOfHint, hint):
-        if truthOfHint == 'Truth':
+        if truthOfHint == 'True':
             return hint
         if truthOfHint == 'Lie':
             return self.bestLieMove(hint)
@@ -398,6 +403,7 @@ count = 0
 while count<3:
     print('Iteration:', count,'\n')
     robot.playPipeline()
+    robot.speaker.speak('Are you ready for the next game?', 1)
     print('Ready for the next game? (Y/N)')
     robot.playerAnswer()
     robot.push_r.setPosition(float(2.47))
