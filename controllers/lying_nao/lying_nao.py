@@ -119,11 +119,13 @@ class LyingRobot(Robot):
         self.audio_fn = "output.mp3"
         self.speaker = self.getSpeaker("Speaker")
         
-        #display = self.getDisplay('display')
-        #img = display.imageLoad(self, '../img/rps.jpeg')
-        #height, width, channels = img.shape
-        #imageRef = display.imageNew(cv2.transpose(img).tolist(), Display.RGB, height, width)
-        #display.imagePaste(imageRef, 0, 0)
+        # Motors
+        self.push_r = self.getMotor("push_rock")
+        self.push_r.setPosition(float(2.47))
+        self.push_p = self.getMotor("push_paper")
+        self.push_p.setPosition(float(2.47))
+        self.push_s = self.getMotor("push_scissors")
+        self.push_s.setPosition(float(2.47))
         
         print('Hi! Do you want to play a game with me? (Y/N)')
         
@@ -238,27 +240,21 @@ class LyingRobot(Robot):
             key = self.keyboard.getKey()
             if not self.choiceLock: 
                 if key == ord('R'):
-                    push_r = self.getMotor("push_rock")
-                    push_r.setPosition(float('inf'))
-                    push_r.setVelocity(0.1)
+                    self.push_r.setPosition(float(2.48))
                     print('You choose Rock')
                     playerChoice = self.actionList[0]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('P'):  
-                    push_p = self.getMotor("push_paper")
-                    push_p.setPosition(float('inf'))
-                    push_p.setVelocity(0.1)
+                    self.push_p.setPosition(float(2.48))
                     print('You choose Paper')         
                     playerChoice = self.actionList[1]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('S'):  
-                    push_s = self.getMotor("push_scissors")
-                    push_s.setPosition(float('inf'))
-                    push_s.setVelocity(0.1)
+                    self.push_s.setPosition(float(2.48))
                     print('You choose Scissors')       
                     playerChoice = self.actionList[2]
                     self.choiceLock = True
@@ -404,6 +400,9 @@ while count<3:
     robot.playPipeline()
     print('Ready for the next game? (Y/N)')
     robot.playerAnswer()
+    robot.push_r.setPosition(float(2.47))
+    robot.push_p.setPosition(float(2.47))
+    robot.push_s.setPosition(float(2.47))
     robot.choiceLock = False
     count+=1
 
