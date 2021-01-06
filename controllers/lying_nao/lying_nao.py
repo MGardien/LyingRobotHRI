@@ -248,7 +248,7 @@ class LyingRobot(Robot):
             key = self.keyboard.getKey()
             if not self.choiceLock: 
                 if key == ord('R'):
-                    self.push_r.setPosition(float(2.48))
+                    self.push_r.setPosition(float(2.485))
                     print('You choose Rock')
                     playerChoice = self.actionList[0]
                     self.choiceLock = True

@@ -22,8 +22,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.00014518873294013253 -0.9990409014664156 -0.043786483272845615 3.09905316196358
-  position -0.43141966404982546 0.39926748141508916 -2.6676133655162366
+  orientation 0.00039751550802612137 -0.9980838805667269 -0.061874141079161976 3.1290079197685254
+  position -0.41570483819388926 0.3917621665276505 -2.541158516157897
 }
 TexturedBackground {
   texture "empty_office"
@@ -230,7 +230,7 @@ RobotisOp3 {
             }
           ]
           endPoint Solid {
-            translation -0.04 0.09 -0.29211300000000007
+            translation -0.0397131 0.0999959 -0.292127
             rotation 0 0.9578262616707715 -0.2873479640676002 0.1
             children [
               Shape {
@@ -330,11 +330,11 @@ RobotisOp3 {
           device [
             LinearMotor {
               name "push_rock"
-              maxPosition 2.48
+              maxPosition 2.49
             }
           ]
           endPoint Solid {
-            translation -0.0188396 -0.119989 -0.2968440000000001
+            translation -0.0191291 -0.0899918 -0.297132
             rotation -0.009647431607538996 0.999953462448817 0 1.5707896938995747
             children [
               Shape {
