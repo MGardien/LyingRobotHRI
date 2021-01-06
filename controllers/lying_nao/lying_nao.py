@@ -243,7 +243,6 @@ class LyingRobot(Robot):
         # hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
             self.audioRobot(hint)
-        self.speaker.speak('Lets play, rock paper scissors', 1)
         print('Please make your choice: (R/P/S)')
         playerChoice = self.playerInput()
         self.all_player_moves.append(playerChoice)
@@ -265,8 +264,9 @@ class LyingRobot(Robot):
         print('\n------------------------------\n\n')
 
     def whoWon(self, robotChoice, playerChoice):
+        print(self.speaker.isSpeaking())
         if robotChoice == 'Paper' and playerChoice == 'Rock':
-            self.speaker.speak('I won', 1)
+            self.speaker.speak('I won what a fun', 1)
             print('I won!')
             self.all_outcomes.append('Robot won')
         elif robotChoice == 'Rock' and playerChoice == 'Scissors':
