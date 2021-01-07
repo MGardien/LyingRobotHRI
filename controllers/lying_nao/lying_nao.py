@@ -38,7 +38,7 @@ class LyingRobot(Robot):
         self.currentlyPlaying = True
 
         self.experimenter = 'mg_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
-        self.participant = '5'         #Edit the participant here  !!!
+        self.participant = '6'         #Edit the participant here  !!!
 
         self.playerPoints = 0
         self.robotPoints = 0
@@ -486,9 +486,10 @@ class LyingRobot(Robot):
     
     
 robot = LyingRobot(camera = False)
+nr_of_iterations = 50
 count = 0
-while count<50:
-    print('Iteration:', count,'/50 \n')
+while count < nr_of_iterations:
+    print('Iteration:', count,'/ '+str(nr_of_iterations)+'\n')
     if count > 0:    
         robot.speaker.speak('Are you ready for the next game?', 1)
         print('Ready for the next game? (Y/N)')
@@ -500,7 +501,7 @@ while count<50:
     robot.choiceLock = False
     count+=1
 robot.saveExperimentData()
-print('[Endscore] Robot: '+robot.robotPoints+' VS Player: '+robot.playerPoints)
+print('[Endscore] Robot: '+str(robot.robotPoints)+' VS Player: '+str(robot.playerPoints))
 if robot.robotPoints > robot.playerPoints:
     print('The robot beat you!')
 elif robot.robotPoints < robot.playerPoints:
