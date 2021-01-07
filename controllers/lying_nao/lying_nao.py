@@ -62,8 +62,8 @@ class LyingRobot(Robot):
         #     self.playPipeline()
         #     count+=1
 
-        self.experimenter = 'bp'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
-        self.participant = '2'         #Edit the participant here  !!!
+        self.experimenter = 'mg_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
+        self.participant = '3'         #Edit the participant here  !!!
 
         self.all_hints = []
         self.all_player_moves = []
