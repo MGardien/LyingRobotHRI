@@ -63,7 +63,7 @@ class LyingRobot(Robot):
         #     count+=1
 
         self.experimenter = 'mg_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
-        self.participant = '3'         #Edit the participant here  !!!
+        self.participant = '5'         #Edit the participant here  !!!
 
         self.all_hints = []
         self.all_player_moves = []
