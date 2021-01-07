@@ -37,8 +37,8 @@ class LyingRobot(Robot):
 
         self.currentlyPlaying = True
 
-        self.experimenter = 'bg_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
-        self.participant = '5'         #Edit the participant here  !!!
+        self.experimenter = 'bp_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
+        self.participant = '7'         #Edit the participant here  !!!
 
         self.playerPoints = 0
         self.robotPoints = 0
