@@ -5,7 +5,7 @@
 # Britt van Gemert - s4555740
 # Veronne Reinders - s4603478
 
-from controller import Robot, Keyboard, Display, Motion, Motor, Camera, Speaker, ImageRef
+from controller import Robot, Keyboard, Display, Motion, Motor, Camera, Speaker, ImageRef, LED
 import numpy as np
 import itertools
 
@@ -37,8 +37,8 @@ class LyingRobot(Robot):
 
         self.currentlyPlaying = True
 
-        self.experimenter = 'bp_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
-        self.participant = '8'         #Edit the participant here  !!!
+        self.experimenter = 'vr_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
+        self.participant = '1'         #Edit the participant here  !!!
 
         self.playerPoints = 0
         self.robotPoints = 0
@@ -85,7 +85,8 @@ class LyingRobot(Robot):
         # self.neck.setPosition(-1)
 
         # self.moveMiddle()
-        self.moveLeft()
+
+        #self.moveLeft()
         # self.moveRight()
         # self.moveBase()
 
@@ -94,19 +95,28 @@ class LyingRobot(Robot):
         # print('sleep is done')
         # self.moveLeft()
         # self.moveRight()
+        
+        self.winSpeak = ['I won', 'Yes, I won', 'I won, better luck next time']
+        self.tieSpeak = ['Great minds think alike, its a tie', 'Its a tie', 'No one won, its a tie']
+        self.lostSpeak = ['Well played, you won', 'Unfortunately for me, you won', 'You won']       
 
         self.speakList = ['I am going to play ', 'I made my choice, this time I will play ', 'This time I will play ', 'I choose ', 'I decided to play ']
 
-        self.engine = pyttsx3.init()
 
         # Keyboard
         self.keyboard.enable(self.timeStep)
         self.keyboard = self.getKeyboard()
+        
+        self.headLED = self.getLED("HeadLed")
+        self.headLED.set(1)
+        
+        self.bodyLED = self.getLED("BodyLed")
+        self.bodyLED.set(1)
 
         # Speaker
-        self.engine = pyttsx3.init()
+        #self.engine = pyttsx3.init()
         # self.engine = pyttsx3.init('sapi5')
-        self.audio_fn = "output.mp3"
+        #self.audio_fn = "output.mp3"
         self.speaker = self.getSpeaker("Speaker")
         self.speaker.getEngine()
 
@@ -118,11 +128,13 @@ class LyingRobot(Robot):
         self.push_s = self.getMotor("push_scissors")
         self.push_s.setPosition(float(2.47))
 
-        print('Hi! Do you want to play a game with me? (Y/N)')
-        self.speaker.speak('Hi! Do you want to play a game with me?', 1)
+        self.speaker.speak('Hi! Do you want to play, rock paper scissors, with me?', 1)
+        print('Hi! Do you want to play rock paper scissors with me? (Y/N)')    
+        self.moveLeftAndWave()
+        while self.speaker.isSpeaking():
+            self.step(1)
 
         self.moveLeft()
-
 
         self.playerAnswer()
 
@@ -131,12 +143,7 @@ class LyingRobot(Robot):
         self.neck.setPosition(-1)
 
         self.armupper.setPosition(1)
-        #self.armupper.setPosition(-0.5)
-
-        #self.armdown.setPosition(0)
-        #self.shoulder.setPosition(0)
-        #self.armupper.setPosition(-0.5)
-
+        
     def moveMiddle(self):
         self.head.setPosition(-0.5)
         self.neck.setPosition(-1)
@@ -224,10 +231,6 @@ class LyingRobot(Robot):
         file.close
         print('File saved')
 
-
-
-
-
     def playPipeline(self):
         # truthOfHint = self.truthLieOrNothing()
         if len(self.all_states)>0:
@@ -254,9 +257,17 @@ class LyingRobot(Robot):
         # hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
             self.audioRobot(hint)
+            while self.speaker.isSpeaking():
+                self.step(1)
+        self.speaker.speak('Please make your choice', 1)
+        while self.speaker.isSpeaking():
+            self.step(1)        
         print('Please make your choice: (R/P/S)')
         playerChoice = self.playerInput()
         self.all_player_moves.append(playerChoice)
+        self.speaker.speak('Your choice was %s' % playerChoice, 1)
+        while self.speaker.isSpeaking():
+            self.step(1)    
         print('Your choice was: ', playerChoice)
         # robotChoice = self.chooseOption(truthOfHint, hint)
 
@@ -266,48 +277,66 @@ class LyingRobot(Robot):
 
         self.all_robot_moves.append(robotChoice)
         self.expressChoice(robotChoice)
+        self.speaker.speak('I chose %s' % robotChoice, 1)
+        while self.speaker.isSpeaking():
+            self.step(1)    
         print('Robot\'s Choice: ', robotChoice, '\n')
 #       playerChoice = self.playerChooses(hint)
         self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
-        reward = self.rewardfunc(playerChoice, robotChoice)
-        self.learningStep(state, newstate, reward)
-
-
+        #reward = self.rewardfunc(playerChoice, robotChoice)
+        #self.learningStep(state, newstate, reward)
 
         print('\n------------------------------\n\n')
 
     def whoWon(self, robotChoice, playerChoice):
-        print(self.speaker.isSpeaking())
         if robotChoice == 'Paper' and playerChoice == 'Rock':
-            self.speaker.speak('I won what a fun', 1)
+            self.speaker.speak(random.choice(self.winSpeak), 1)
+            while self.speaker.isSpeaking():
+                self.step(1)    
             print('I won!')
             self.all_outcomes.append('Robot won')
             self.robotPoints += 3
         elif robotChoice == 'Rock' and playerChoice == 'Scissors':
-            self.speaker.speak('I won', 1)
+            self.speaker.speak(random.choice(self.winSpeak), 1)
+            while self.speaker.isSpeaking():
+                self.step(1)  
             print('I won!')
             self.all_outcomes.append('Robot won')
             self.robotPoints += 3
         elif robotChoice == 'Scissors' and playerChoice == 'Paper':
-            self.speaker.speak('I won', 1)
+            self.speaker.speak(random.choice(self.winSpeak), 1)
+            while self.speaker.isSpeaking():
+                self.step(1)  
             print('I won!')
             self.all_outcomes.append('Robot won')
             self.robotPoints += 3
         elif robotChoice == playerChoice:
+            self.speaker.speak(random.choice(self.tieSpeak), 1)
+            while self.speaker.isSpeaking():
+                self.step(1)  
             print('It\'s a tie!')
             self.all_outcomes.append('Tie')
             self.robotPoints += 1
             self.playerPoints += 1
         elif playerChoice == 'Paper' and robotChoice == 'Rock':
+            self.speaker.speak(random.choice(self.lostSpeak), 1)
+            while self.speaker.isSpeaking():
+                self.step(1)  
             print('You won!')
             self.all_outcomes.append('Player wins')
             self.playerPoints += 3
         elif playerChoice == 'Rock' and robotChoice == 'Scissors':
+            self.speaker.speak(random.choice(self.lostSpeak), 1)
+            while self.speaker.isSpeaking():
+                self.step(1)          
             print('You won!')
             self.all_outcomes.append('Player wins')
             self.playerPoints += 3
         elif playerChoice == 'Scissors' and robotChoice == 'Paper':
+            self.speaker.speak(random.choice(self.lostSpeak), 1)
+            while self.speaker.isSpeaking():
+                self.step(1)          
             print('You won!')
             self.all_outcomes.append('Player wins')
             self.playerPoints += 3
@@ -324,12 +353,15 @@ class LyingRobot(Robot):
             key = self.keyboard.getKey()
             if(key == ord('Y')):
                 self.speaker.speak('Great, lets start!', 1)
-                print('Great, let\'s start!')
+                while self.speaker.isSpeaking():
+                    self.step(1)
+                #print('Great, let\'s start!')
                 break
             elif(key == ord('N')):
                 self.speaker.speak('Okay, bye', 1)
-                print('Bye!')
-                self.saveExperimentData()
+                while self.speaker.isSpeaking():
+                    self.step(1)                
+                #self.saveExperimentData()
                 sys.exit(0)
 
     def playerInput(self):
@@ -483,15 +515,22 @@ class LyingRobot(Robot):
 
     def extract_hint(action):
         return action[0]
+        
+    def tts(self, text):
+        self.speaker.speak(text, 1)
 
 
 robot = LyingRobot(camera = False)
-nr_of_iterations = 50
+nr_of_iterations = 5
 count = 0
 while count < nr_of_iterations:
     print('Iteration:', count,'/ '+str(nr_of_iterations)+'\n')
     if count > 0:
+        #thread = threading.Thread(target=robot.tts, args=('Are you ready for the next game?',))
+        #thread.start()
         robot.speaker.speak('Are you ready for the next game?', 1)
+        while robot.speaker.isSpeaking():
+            robot.step(1)
         print('Ready for the next game? (Y/N)')
         robot.playerAnswer()
     robot.playPipeline()
@@ -500,12 +539,21 @@ while count < nr_of_iterations:
     robot.push_s.setPosition(float(2.47))
     robot.choiceLock = False
     count+=1
-robot.saveExperimentData()
+#robot.saveExperimentData()
+robot.speaker.speak('The end score is... %s points for me vs. %s points for you, which means...' % (robot.robotPoints, robot.playerPoints), 1)
 print('[Endscore] Robot: '+str(robot.robotPoints)+' VS Player: '+str(robot.playerPoints))
+while robot.speaker.isSpeaking():
+    robot.step(1)
 if robot.robotPoints > robot.playerPoints:
-    print('The robot beat you!')
+    robot.speaker.speak('I did beat you, better luck next time', 1)
+    while robot.speaker.isSpeaking():
+        robot.step(1)
 elif robot.robotPoints < robot.playerPoints:
-    print('You beat the robot!')
+    robot.speaker.speak('Somehow you managed to beat me, well done', 1)
+    while robot.speaker.isSpeaking():
+        robot.step(1)
 else:
-    print('You and the robot are equals!')
-print('Session Finished')
+    robot.speaker.speak('Looks like we both did equally good', 1)
+    while robot.speaker.isSpeaking():
+        robot.step(1)
+robot.speaker.speak('Thank you for playing rock paper scissors with me! Bye!', 1)

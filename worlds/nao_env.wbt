@@ -22,23 +22,37 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.00039751550802612137 -0.9980838805667269 -0.061874141079161976 3.1290079197685254
-  position -0.41570483819388926 0.3917621665276505 -2.541158516157897
+  orientation -5.2199638012706895e-05 -0.9926534782932193 -0.12099202166908077 3.1277421024735585
+  position -0.3879246684939016 0.5351381991156268 -2.2421474518506614
 }
 TexturedBackground {
   texture "empty_office"
   skyColor [
-    0.12549 0.290196 0.529412
+    1 0.333333 1
   ]
 }
 TexturedBackgroundLight {
   texture "empty_office"
 }
 Floor {
-  size 25 25
+  translation -0.43 0 -2.67
+  size 4 7
   tileSize 0.8 0.8
   appearance Parquetry {
+    type "light strip"
   }
+}
+Wall {
+  translation 1.48 0 -1.10997
+  rotation 0 1 0 1.5708
+  name "wall(1)"
+  size 4 2.4 0.2
+}
+Wall {
+  translation -2.34 0 -1.09
+  rotation 0 1 0 -1.5707953071795862
+  name "wall(2)"
+  size 4 2.4 0.2
 }
 Solid {
   translation -0.27 0.05 -1.04
@@ -230,7 +244,7 @@ RobotisOp3 {
             }
           ]
           endPoint Solid {
-            translation -0.0397131 0.0999959 -0.292127
+            translation -0.0397131 0.0999959 -0.29212700000000025
             rotation 0 0.9578262616707715 -0.2873479640676002 0.1
             children [
               Shape {
@@ -334,7 +348,7 @@ RobotisOp3 {
             }
           ]
           endPoint Solid {
-            translation -0.0191291 -0.0899918 -0.297132
+            translation -0.0191291 -0.0899918 -0.29713199999999995
             rotation -0.009647431607538996 0.999953462448817 0 1.5707896938995747
             children [
               Shape {
@@ -359,4 +373,8 @@ RobotisOp3 {
       ]
     }
   ]
+}
+Wall {
+  translation -0.43 0 0.83
+  size 4 2.4 0.2
 }
