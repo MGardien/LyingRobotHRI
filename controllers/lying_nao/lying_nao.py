@@ -37,33 +37,11 @@ class LyingRobot(Robot):
 
         self.currentlyPlaying = True
 
-        # Initialize arm joints
-        # self.elbowyaw = self.getMotor('RElbowYaw')
-        # self.elbowroll= self.getMotor('RElbowRoll')
-        # self.shoulderpitch = self.getMotor('RShoulderPitch')
-        #
-        #
-        # self.shoulderpitch.getPositionSensor().enable(1)
-        # self.shoulderroll = self.getMotor('RShoulderRoll')
-        # self.shoulderroll.getPositionSensor().enable(1)
-
-
-        # self.headyaw = self.getMotor('HeadYaw')
-        # self.headpitch = self.getMotor('HeadPitch')
-
-        # self.rollmin, self.rollmax = -1.3260, 0.3140
-        # self.pitchmin, self.pitchmax = -2.0850, 2.0850
-        # self.shoulderroll.setVelocity(1)
-        # self.shoulderpitch.setVelocity(1)
-
-        # count = 0
-        # while count<15:
-        #     print('Iteration:', count,'\n')
-        #     self.playPipeline()
-        #     count+=1
-
         self.experimenter = 'mg_train'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
         self.participant = '5'         #Edit the participant here  !!!
+
+        self.playerPoints = 0
+        self.robotPoints = 0
 
         self.all_hints = []
         self.all_player_moves = []
@@ -201,7 +179,7 @@ class LyingRobot(Robot):
        
     def saveExperimentData(self):
         df = pd.DataFrame({'hints':robot.all_hints,'player':robot.all_player_moves,'robot':robot.all_robot_moves,'outcome':robot.all_outcomes})
-        df.to_excel('../../data/'+robot.experimenter+robot.participant+'.xlsx') 
+        df.to_excel('../../data/'+robot.experimenter+robot.participant+'.xlsx')
 
     def hint_and_lie_to_action(self, hint):
         if hint == 'Rock':
@@ -305,26 +283,34 @@ class LyingRobot(Robot):
             self.speaker.speak('I won what a fun', 1)
             print('I won!')
             self.all_outcomes.append('Robot won')
+            self.robotPoints += 3
         elif robotChoice == 'Rock' and playerChoice == 'Scissors':
             self.speaker.speak('I won', 1)
             print('I won!')
             self.all_outcomes.append('Robot won')
+            self.robotPoints += 3
         elif robotChoice == 'Scissors' and playerChoice == 'Paper':
             self.speaker.speak('I won', 1)        
             print('I won!')
             self.all_outcomes.append('Robot won')
+            self.robotPoints += 3
         elif robotChoice == playerChoice:
             print('It\'s a tie!')
             self.all_outcomes.append('Tie')
+            self.robotPoints += 1
+            self.playerPoints += 1
         elif playerChoice == 'Paper' and robotChoice == 'Rock':
             print('You won!')
             self.all_outcomes.append('Player wins')
+            self.playerPoints += 3
         elif playerChoice == 'Rock' and robotChoice == 'Scissors':
             print('You won!')
             self.all_outcomes.append('Player wins')
+            self.playerPoints += 3
         elif playerChoice == 'Scissors' and robotChoice == 'Paper':
             print('You won!')
             self.all_outcomes.append('Player wins')
+            self.playerPoints += 3
         else:
             self.all_outcomes.append('No winner')
 
@@ -514,5 +500,12 @@ while count<50:
     robot.choiceLock = False
     count+=1
 robot.saveExperimentData()
+print('[Endscore] Robot: '+robot.robotPoints+' VS Player: '+robot.playerPoints)
+if robot.robotPoints > robot.playerPoints:
+    print('The robot beat you!')
+elif robot.robotPoints < robot.playerPoints:
+    print('You beat the robot!')
+else:
+    print('You and the robot are equals!')
 print('Session Finished')
 
