@@ -284,8 +284,8 @@ class LyingRobot(Robot):
 #       playerChoice = self.playerChooses(hint)
         self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
-        #reward = self.rewardfunc(playerChoice, robotChoice)
-        #self.learningStep(state, newstate, reward)
+        reward = self.rewardfunc(playerChoice, robotChoice)
+        self.learningStep(state, newstate, reward)
 
         print('\n------------------------------\n\n')
 
@@ -361,7 +361,7 @@ class LyingRobot(Robot):
                 self.speaker.speak('Okay, bye', 1)
                 while self.speaker.isSpeaking():
                     self.step(1)                
-                #self.saveExperimentData()
+                self.saveExperimentData()
                 sys.exit(0)
 
     def playerInput(self):
@@ -521,7 +521,7 @@ class LyingRobot(Robot):
 
 
 robot = LyingRobot(camera = False)
-nr_of_iterations = 5
+nr_of_iterations = 20
 count = 0
 while count < nr_of_iterations:
     print('Iteration:', count,'/ '+str(nr_of_iterations)+'\n')
@@ -539,7 +539,7 @@ while count < nr_of_iterations:
     robot.push_s.setPosition(float(2.47))
     robot.choiceLock = False
     count+=1
-#robot.saveExperimentData()
+robot.saveExperimentData()
 robot.speaker.speak('The end score is... %s points for me vs. %s points for you, which means...' % (robot.robotPoints, robot.playerPoints), 1)
 print('[Endscore] Robot: '+str(robot.robotPoints)+' VS Player: '+str(robot.playerPoints))
 while robot.speaker.isSpeaking():
