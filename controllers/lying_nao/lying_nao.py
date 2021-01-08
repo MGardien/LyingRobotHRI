@@ -225,11 +225,11 @@ class LyingRobot(Robot):
         self.saveToFile()
 
 
-    def saveToFile(self):
-        file = open("qmatrix", "wb")
-        np.save(file, self.qmatrix)
-        file.close
-        print('File saved')
+    # def saveToFile(self):
+        # file = open("qmatrix", "wb")
+        # np.save(file, self.qmatrix)
+        # file.close
+        # print('File saved')
 
     def playPipeline(self):
         # truthOfHint = self.truthLieOrNothing()
@@ -284,8 +284,8 @@ class LyingRobot(Robot):
 #       playerChoice = self.playerChooses(hint)
         self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
-        reward = self.rewardfunc(playerChoice, robotChoice)
-        self.learningStep(state, newstate, reward)
+        #reward = self.rewardfunc(playerChoice, robotChoice)
+        #self.learningStep(state, newstate, reward)
 
         print('\n------------------------------\n\n')
 
@@ -355,7 +355,6 @@ class LyingRobot(Robot):
                 self.speaker.speak('Great, lets start!', 1)
                 while self.speaker.isSpeaking():
                     self.step(1)
-                #print('Great, let\'s start!')
                 break
             elif(key == ord('N')):
                 self.speaker.speak('Okay, bye', 1)
@@ -372,33 +371,23 @@ class LyingRobot(Robot):
             if not self.choiceLock:
                 if key == ord('R'):
                     self.push_r.setPosition(float(2.485))
-                    #print('You choose Rock')
                     playerChoice = self.actionList[0]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('P'):
                     self.push_p.setPosition(float(2.48))
-                    #print('You choose Paper')
                     playerChoice = self.actionList[1]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
                 elif key == ord('S'):
                     self.push_s.setPosition(float(2.48))
-                    #print('You choose Scissors')
                     playerChoice = self.actionList[2]
                     self.choiceLock = True
                     self.currentlyPlaying = False
                     break
         return playerChoice
-
-    # def playerChooses(self, hint):
-    #    Player chooses best move and always trusts the hint
-        # playerChoice = self.bestMove(hint)
-        # print('Player choice: ', playerChoice)
-        # return playerChoice
-
 
     def chooseOption(self, truthOfHint, hint):
         if truthOfHint == 'True':
