@@ -7,4 +7,5 @@ maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
 textFiles: 0 "controllers/lying_nao/lying_nao.py"
+consoles: Console:All:All
 renderingDevicePerspectives: ROBOTIS OP3:Camera;0;0.0296296;0;0
