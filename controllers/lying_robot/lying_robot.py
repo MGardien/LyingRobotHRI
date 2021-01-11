@@ -5,7 +5,7 @@
 # Britt van Gemert - s4555740
 # Veronne Reinders - s4603478
 
-from controller import Robot, Keyboard, Display, Motion, Motor, Camera, Speaker, ImageRef, LED
+from controller import Robot, Keyboard, Display, Motion, Motor, Speaker, ImageRef, LED
 import numpy as np
 import itertools
 
@@ -21,38 +21,33 @@ from gtts import gTTS
 import os
 
 class LyingRobot(Robot):
-    def __init__(self, camera):
+    def __init__(self):
         super(LyingRobot, self).__init__()
 
-        # From the tutorial2_controller file
-        # timeStep and state init
         self.timeStep = 32 # Milisecs to process the data (loop frequency) - Use int(self.getBasicTimeStep()) for default
         self.state = 0 # Idle starts for selecting different states
 
         self.step(self.timeStep) # Execute one step to get the initial position
 
-        self.cameraOP3 = self.getCamera("Camera")
-        if camera:
-            self.cameraOP3.enable(1)
-
         self.currentlyPlaying = True
 
-        self.experimenter = 'mg'     #Edit your experimenter-signature here (mg/vr/bp/bvg)   !!!
-        self.participant = '13'         #Edit the participant here  !!!
+        self.experimenter = 'pl'     # Edit your experimenter-signature here (mg/vr/bp/bvg)
+        self.participant = '0'      # Edit the participant-number here
 
-        self.playerPoints = 0
-        self.robotPoints = 0
+        self.playerPoints = 0   # Initialise player score
+        self.robotPoints = 0    # Initialise robot score
+ 
+        self.all_hints = []             # List to save all hints during the experiment
+        self.all_player_moves = []      # List to save all player-moves during the experiment
+        self.all_robot_moves = []       # List to save all robot-moves during the experiment
+        self.all_outcomes = []          # List to save all outcomes during the experiment
 
-        self.all_hints = []
-        self.all_player_moves = []
-        self.all_robot_moves = []
-        self.all_outcomes = []
-        self.all_states = []
+        self.all_states = []            # List to look back at previous states during the experiment
 
-        self.actionList = ['Rock', 'Paper', 'Scissors']
-        self.lieList = ['True', 'Lie', 'Nothing']
-        self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']
-        self.choiceLock = False
+        self.actionList = ['Rock', 'Paper', 'Scissors']             # Define possible actions for both robot and player
+        self.lieList = ['True', 'Lie', 'Nothing']                   # Define possible strategies for the robot to influence the player
+        self.hintList = ['Rock', 'Paper', 'Scissors', 'Nothing']    # Define possible hints that the robot might give
+        self.choiceLock = False                                     # Create lock to prevent multiple keyboard hits
 
         self.onegame = [self.actionList, self.actionList, self.lieList]
         self.firstgame = list(itertools.product(*self.onegame))
@@ -61,66 +56,46 @@ class LyingRobot(Robot):
         self.statespace = list(itertools.product(*self.bothgames))
         self.actionspace = list(itertools.product(*[self.lieList, self.actionList]))
 
+        # Load the trained q-matrix
         file2 = open("qmatrix", "rb")
         self.qmatrix = np.load(file2)
 
+        # Initialise arms and head
         self.unusedArm = self.getMotor('ArmUpperL')
         self.unusedArm.setPosition(1.5)
-
-
         self.shoulder = self.getMotor('ShoulderR')
         self.armupper = self.getMotor('ArmUpperR')
-        self.armdown = self.getMotor('ArmLowerR')
-
-
+        self.armdown = self.getMotor('ArmLowerR')       
         self.shoulder.setVelocity(1)
         self.armupper.setVelocity(1)
         self.armdown.setVelocity(1)
-
         self.head = self.getMotor('Head')
         self.neck = self.getMotor('Neck')
         self.neck.setVelocity(1)
-
         self.head.setPosition(-0.4)
-        # self.neck.setPosition(-1)
-
-        # self.moveMiddle()
-
-        #self.moveLeft()
-        # self.moveRight()
-        # self.moveBase()
-
-        # self.moveBase()
-        # sleep(10)
-        # print('sleep is done')
-        # self.moveLeft()
-        # self.moveRight()
         
+        # Define phrases for win, tie, lose and start
         self.winSpeak = ['I won', 'Yes, I won', 'I won, better luck next time']
         self.tieSpeak = ['Great minds think alike, its a tie', 'Its a tie', 'No one won, its a tie']
         self.lostSpeak = ['Well played, you won', 'Unfortunately for me, you won', 'You won']       
 
         self.speakList = ['I am going to play ', 'I made my choice, this time I will play ', 'This time I will play ', 'I choose ', 'I decided to play ']
 
-
-        # Keyboard
+        # Keyboard init
         self.keyboard.enable(self.timeStep)
         self.keyboard = self.getKeyboard()
         
+        # LEDs init
         self.headLED = self.getLED("HeadLed")
-        self.headLED.set(1)
-        
+        self.headLED.set(1)       
         self.bodyLED = self.getLED("BodyLed")
         self.bodyLED.set(1)
 
-        # Speaker
-        #self.engine = pyttsx3.init()
-        # self.engine = pyttsx3.init('sapi5')
-        #self.audio_fn = "output.mp3"
+        # Speaker init
         self.speaker = self.getSpeaker("Speaker")
         self.speaker.getEngine()
 
-        # Motors
+        # Choice-motors init
         self.push_r = self.getMotor("push_rock")
         self.push_r.setPosition(float(2.47))
         self.push_p = self.getMotor("push_paper")
@@ -128,22 +103,23 @@ class LyingRobot(Robot):
         self.push_s = self.getMotor("push_scissors")
         self.push_s.setPosition(float(2.47))
 
+        # Initial behaviour
         self.speaker.speak('Hi! Do you want to play, rock paper scissors, with me?', 1)
         print('Hi! Do you want to play rock paper scissors with me? (Y/N)')    
         self.moveLeftAndWave()
         while self.speaker.isSpeaking():
             self.step(1)
-
         self.moveLeft()
-
         self.playerAnswer()
 
+    # Starting movement
     def moveLeftAndWave(self):
         self.head.setPosition(-0.5)
         self.neck.setPosition(-1)
 
         self.armupper.setPosition(1)
         
+    # Pointing to the middle object
     def moveMiddle(self):
         self.head.setPosition(-0.5)
         self.neck.setPosition(-1)
@@ -152,14 +128,7 @@ class LyingRobot(Robot):
         self.shoulder.setPosition(1)
         self.armupper.setPosition(-0.5)
 
-    def moveBase(self):
-        self.head.setPosition(-0.1)
-        self.neck.setPosition(-1)
-
-        self.armdown.setPosition(0)
-        self.shoulder.setPosition(0)
-        self.armupper.setPosition(-1.5)
-
+    # Pointing to the left object
     def moveLeft(self):
         self.head.setPosition(-0.5)
         self.neck.setPosition(-1.5)
@@ -168,6 +137,7 @@ class LyingRobot(Robot):
         self.shoulder.setPosition(0)
         self.armupper.setPosition(-0.5)
 
+    # Pointing to the right object
     def moveRight(self):
         self.head.setPosition(-0.5)
         self.neck.setPosition(-0.5)
@@ -176,6 +146,7 @@ class LyingRobot(Robot):
         self.shoulder.setPosition(1)
         self.armupper.setPosition(-1.6)
 
+    # Pointing to the image of Rock, Paper or Scissors
     def expressChoice(self,robotChoice):
         if robotChoice == 'Rock':
             self.moveLeft()
@@ -184,10 +155,12 @@ class LyingRobot(Robot):
         elif robotChoice == 'Scissors':
             self.moveRight()
 
+    # Save data of experiment to excel file
     def saveExperimentData(self):
         df = pd.DataFrame({'hints':robot.all_hints,'player':robot.all_player_moves,'robot':robot.all_robot_moves,'outcome':robot.all_outcomes})
         df.to_excel('../../data/'+robot.experimenter+robot.participant+'.xlsx')
 
+    # Determines the action when the robot is lying
     def hint_and_lie_to_action(self, hint):
         if hint == 'Rock':
             action = 'Scissors'
@@ -197,12 +170,13 @@ class LyingRobot(Robot):
             action = 'Paper'
         return action
 
+    # Pick indication and action from q-matrix
     def getIndicationAndActionFromState(self, state):
-        # print(self.statespace.index(state))
         indication = self.actionspace[np.argmax(self.qmatrix[self.statespace.index(state)])][0]
         action = self.actionspace[np.argmax(self.qmatrix[self.statespace.index(state)])][1]
         return indication, action
 
+    # Update q-matrix
     def learningStep(self, state, newstate, reward):
         alpha = 0.6
         gamma = 0.4
@@ -220,30 +194,26 @@ class LyingRobot(Robot):
 
         self.qmatrix[state_space_index, action_space_index] = new_value
 
-
         print('Changed old val: ', old_value, ' to new val: ', new_value)
         self.saveToFile()
 
+    # Opens and saves the updated q-matrix
+    def saveToFile(self):
+        file = open("qmatrix", "wb")
+        np.save(file, self.qmatrix)
+        file.close
+        print('File saved')
 
-    # def saveToFile(self):
-        # file = open("qmatrix", "wb")
-        # np.save(file, self.qmatrix)
-        # file.close
-        # print('File saved')
-
+    # Executes a game
     def playPipeline(self):
-        # truthOfHint = self.truthLieOrNothing()
         if len(self.all_states)>0:
             state = self.all_states[-1]
-            # print('actually loaded last state')
         else:
             randomnumber = random.randint(0,len(self.statespace)-1)
             state = self.statespace[randomnumber]
-            # print('randomly sampled state: ', randomnumber)
 
         truthOfHint, robotChoice = self.getIndicationAndActionFromState(state)
 
-        # print(self.all_states)
         if truthOfHint == 'Lie':
             hint = self.hint_and_lie_to_action(robotChoice)
         if truthOfHint == 'True':
@@ -251,10 +221,7 @@ class LyingRobot(Robot):
         if truthOfHint == 'Nothing':
             hint = 'Nothing'
 
-
         self.all_hints.append(truthOfHint)
-        #print('truthOfHint (hidden) ', truthOfHint)
-        # hint = self.giveHint(truthOfHint)
         if truthOfHint == "Lie" or truthOfHint == "True":
             self.audioRobot(hint)
             while self.speaker.isSpeaking():
@@ -269,7 +236,6 @@ class LyingRobot(Robot):
         while self.speaker.isSpeaking():
             self.step(1)    
         print('Your choice was: ', playerChoice)
-        # robotChoice = self.chooseOption(truthOfHint, hint)
 
         currentgame = (playerChoice, robotChoice, truthOfHint)
         newstate = (currentgame, state[0])
@@ -281,7 +247,6 @@ class LyingRobot(Robot):
         while self.speaker.isSpeaking():
             self.step(1)    
         print('Robot\'s Choice: ', robotChoice, '\n')
-#       playerChoice = self.playerChooses(hint)
         self.whoWon(robotChoice, playerChoice)
         self.currentlyPlaying = True
         #reward = self.rewardfunc(playerChoice, robotChoice)
@@ -289,6 +254,7 @@ class LyingRobot(Robot):
 
         print('\n------------------------------\n\n')
 
+    # Checks who won the game and rewards points
     def whoWon(self, robotChoice, playerChoice):
         if robotChoice == 'Paper' and playerChoice == 'Rock':
             self.speaker.speak(random.choice(self.winSpeak), 1)
@@ -343,11 +309,7 @@ class LyingRobot(Robot):
         else:
             self.all_outcomes.append('No winner')
 
-    def playerChooses(self, hint):
-        # Player chooses best move and always trusts the hint
-        playerChoice = self.bestMove(hint)
-        print('Player choice: ', playerChoice)
-
+    # Keyboard-input for continuing
     def playerAnswer(self):
         while self.step(self.timeStep) != -1 and self.currentlyPlaying:
             key = self.keyboard.getKey()
@@ -363,9 +325,9 @@ class LyingRobot(Robot):
                 self.saveExperimentData()
                 sys.exit(0)
 
+    # Keyboard-input for Rock, Paper or Scissors
     def playerInput(self):
         playerChoice = random.choice(self.actionList)
-
         while self.step(self.timeStep) != -1 and self.currentlyPlaying:
             key = self.keyboard.getKey()
             if not self.choiceLock:
@@ -389,42 +351,7 @@ class LyingRobot(Robot):
                     break
         return playerChoice
 
-    def chooseOption(self, truthOfHint, hint):
-        if truthOfHint == 'True':
-            return hint
-        if truthOfHint == 'Lie':
-            return self.bestLieMove(hint)
-        if truthOfHint == 'Nothing':
-            return random.choice(self.actionList)
-
-    def bestLieMove(self, lie):
-        if lie == 'Rock':
-            return 'Scissors'
-        if lie == 'Paper':
-            return 'Rock'
-        if lie == 'Scissors':
-            return 'Paper'
-
-    def bestMove(self, playerChoice):
-        if playerChoice == 'Rock':
-            bestMove = 'Paper'
-        if playerChoice == 'Paper':
-            bestMove = 'Scissors'
-        if playerChoice == 'Scissors':
-            bestMove = 'Rock'
-        if playerChoice == 'Nothing':
-            bestMove = random.choice(self.actionList)
-        return bestMove
-
-    def giveHint(self, truthOfHint):
-        if truthOfHint == 'Nothing':
-            return 'Nothing'
-        else:
-            return random.choice(self.actionList)
-
-    def truthLieOrNothing(self):
-        return random.choice(self.lieList)
-
+    # Execute speech
     def audioRobot(self, value):
         if value == "Paper":
             self.speaker.speak("%s paper" % random.choice(self.speakList), 1)
@@ -432,7 +359,6 @@ class LyingRobot(Robot):
             self.speaker.speak("%s rock" % random.choice(self.speakList), 1)
         else:
             self.speaker.speak("%s scissors" % random.choice(self.speakList), 1)
-
 
     # Reward function, 0 for tie, -1 for loss, 1 for win, might want to tune later
     def rewardfunc(self, playermove, robotmove):
@@ -458,65 +384,12 @@ class LyingRobot(Robot):
         if playermove == 'Scissors' and robotmove == 'Paper':
             return -1
 
-    # Return the move that would have been the winning move considering the previous robot's choice
-    def repeatPreviousWin(self, previousChoice):
-        if previousChoice == 'Rock':
-            bestMove = 'Paper'
-        if previousChoice == 'Paper':
-            bestMove = 'Scissors'
-        if previousChoice == 'Scissors':
-            bestMove = 'Rock'
-        if previousChoice == 'Nothing':
-            bestMove = random.choice(self.actionList)
-        return bestMove
-
-
-    # Decide how the simulated player will choose an action based on the current state
-    def player_algorithm(self, state):
-        epsilon = 0.3
-        if random.uniform(0, 1) < epsilon:
-            playermove = self.actionList[random.randint(0,len(self.actionList)-1)]
-        else:
-            if random.uniform(0, 1) < 0.7:
-                playermove = state[0][0]
-            else:
-                playermove = state[1][0]
-
-        return playermove
-
-    # def nextstatefunc(state, action):
-    #     playermove = player_algorithm(state)
-    #     robotmove = extract_action(action)
-    #     hint = extract_hint(action)
-
-    #     reward = rewardfunc(playermove, robotmove)
-
-    #     # First game in state tuple is most recent
-    #     # Therefore first index old state becomes second index new state
-    #     # And the current game becomes the first index of new state
-    #     currentgame = (playermove, robotmove, hint)
-    #     nextstate = (currentgame ,state[0])
-    #     return nextstate, reward
-
-
-    def extract_action(action):
-        return action[1]
-
-    def extract_hint(action):
-        return action[0]
-        
-    def tts(self, text):
-        self.speaker.speak(text, 1)
-
-
-robot = LyingRobot(camera = False)
-nr_of_iterations = 20
+robot = LyingRobot()        # Initialise the robot
+nr_of_iterations = 20       # Define the number of games for each experiment or training session
 count = 0
 while count < nr_of_iterations:
     print('Iteration:', count,'/ '+str(nr_of_iterations)+'\n')
     if count > 0:
-        #thread = threading.Thread(target=robot.tts, args=('Are you ready for the next game?',))
-        #thread.start()
         robot.speaker.speak('Are you ready for the next game?', 1)
         while robot.speaker.isSpeaking():
             robot.step(1)

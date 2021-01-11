@@ -227,7 +227,7 @@ SolidBox {
 RobotisOp3 {
   translation -0.40486278886597854 0.27869190746204214 -0.7716393238787866
   rotation -0.20578316975541777 0.6920704649830953 0.691875536887593 2.734175909522495
-  controller "lying_nao"
+  controller "lying_robot"
   leftFootSlot [
     Transform {
       translation 0.227054 -0.573275 0
