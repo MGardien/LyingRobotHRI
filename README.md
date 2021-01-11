@@ -1,1 +1,1 @@
-# LyingNaoHRI
+# LyingRobotHRI
